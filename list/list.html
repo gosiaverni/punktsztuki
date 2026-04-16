@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+  <meta charset="UTF-8">
+  <title>Lista wydarzeń</title>
+  <link rel="stylesheet" href="../start/start.css">
+</head>
+<body>
+
+<header class="navbar">
+  <div class="logo" onclick="location.href='../start/start.html'">
+    Punkt Sztuki
+  </div>
+
+  <nav class="nav">
+    <div class="dropdown">
+      <button class="nav-btn">SZUKAJ</button>
+      <div class="dropdown-content">
+        <div onclick="location.href='../map/map.html'">Mapa wydarzeń</div>
+        <div onclick="location.href='list.html'">Lista wydarzeń</div>
+        <div>Ranking wydarzeń</div>
+      </div>
+    </div>
+
+    <div class="dropdown">
+      <button class="nav-btn">DODAJ</button>
+      <div class="dropdown-content">
+        <div onclick="location.href='../create/create.html'">Dodaj wydarzenie</div>
+        <div>Dodaj recenzję</div>
+      </div>
+    </div>
+
+    <div class="dropdown">
+  <button class="nav-btn">TWOJE KONTO</button>
+  <div class="dropdown-content">
+    <div onclick="location.href='../profile/profile.html'">Profil</div>
+    <div onclick="location.href='../settings/settings.html'">Ustawienia</div>
+    <div id="logout-btn">Wyloguj się</div>
+  </div>
+</div>
+  </nav>
+</header>
+
+<main class="list-page">
+
+  <div class="list-container">
+
+    <div class="list-header">
+      <h1 id="city-title">wydarzenia</h1>
+
+      <!-- 🔽 wybór miasta -->
+      <select id="city-select" class="city-select">
+        <option value="">wybierz miasto</option>
+        <option value="warszawa">Warszawa</option>
+        <option value="kraków">Kraków</option>
+        <option value="łódź">Łódź</option>
+        <option value="gdańsk">Gdańsk</option>
+        <option value="wrocław">Wrocław</option>
+        <option value="białystok">Białystok</option>
+        <option value="bydgoszcz">Bydgoszcz</option>
+        <option value="katowice">Katowice</option>
+        <option value="kielce">Kielce</option>
+        <option value="lublin">Lublin</option>
+        <option value="olsztyn">Olsztyn</option>
+        <option value="opole">Opole</option>
+        <option value="poznań">Poznań</option>
+        <option value="rzeszów">Rzeszów</option>
+        <option value="szczecin">Szczecin</option>
+        <option value="toruń">Toruń</option>
+        <option value="zielona góra">Zielona Góra</option>
+
+
+
+      </select>
+    </div>
+
+    <!-- 🔥 lista wydarzeń -->
+    <div class="events-grid" id="events-container"></div>
+
+  </div>
+
+</main>
+
+<script src="../start/start.js"></script>
+<script src="list.js"></script>
+</body>
+</html>

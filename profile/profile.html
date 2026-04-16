@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+  <meta charset="UTF-8">
+  <title>Profil</title>
+  <link rel="stylesheet" href="../start/start.css">
+</head>
+<body>
+
+<header class="navbar">
+  <div class="logo" onclick="location.href='../start/start.html'">
+    Punkt Sztuki
+  </div>
+
+  <nav class="nav">
+    <div class="dropdown">
+      <button class="nav-btn">SZUKAJ</button>
+      <div class="dropdown-content">
+        <div onclick="location.href='../map/map.html'">Mapa wydarzeń</div>
+        <div onclick="location.href='../list/list.html'">Lista wydarzeń</div>
+      </div>
+    </div>
+
+    <div class="dropdown">
+      <button class="nav-btn">DODAJ</button>
+      <div class="dropdown-content">
+        <div onclick="location.href='../create/create.html'">Dodaj wydarzenie</div>
+      </div>
+    </div>
+
+    <div class="dropdown">
+      <button class="nav-btn">TWOJE KONTO</button>
+      <div class="dropdown-content">
+        <div onclick="location.href='../profile/profile.html'">Profil</div>
+        <div>Ustawienia</div>
+        <div id="logout-btn">Wyloguj się</div>
+      </div>
+    </div>
+  </nav>
+</header>
+
+<main class="profile-page">
+
+  <div class="profile-container">
+
+    <h1>Profil</h1>
+
+    <!-- 🔥 KARTA PROFILU -->
+    <div class="profile-card">
+
+      <img src="../assets/star.png" id="profile-image" class="profile-avatar">
+
+      <div class="profile-info">
+        <h2 id="profile-name">Twoje imię</h2>
+        <p id="profile-handle">@twojhandle</p>
+
+        <span class="edit-profile" id="edit-profile">Edytuj profil</span>
+      </div>
+
+    </div>
+
+    <!-- 🔥 ZAPISANE -->
+    <h3 class="section-title">Zapisane wydarzenia</h3>
+
+  </div>
+
+</main>
+
+<!-- 🪟 MODAL -->
+<div class="profile-modal" id="profile-modal">
+
+  <div class="profile-box">
+
+    <span class="close-modal" id="close-profile">✕</span>
+
+    <h2>Edytuj profil</h2>
+
+    <input type="file" id="avatar-input">
+
+    <input type="text" id="name-input" placeholder="imię i nazwisko">
+    <input type="text" id="handle-input" placeholder="@handle">
+
+    <button id="save-profile" class="submit-btn">zapisz</button>
+
+  </div>
+
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="../supabase.js"></script>
+<script src="profile.js"></script>
+<script src="../start/start.js"></script>
+
+</body>
+</html>

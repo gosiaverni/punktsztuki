@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+  <meta charset="UTF-8">
+  <title>Wydarzenie</title>
+  <link rel="stylesheet" href="../start/start.css">
+</head>
+<body>
+
+<header class="navbar">
+  <div class="logo" onclick="location.href='../start/start.html'">
+    Punkt Sztuki
+  </div>
+
+  <nav class="nav">
+    <div class="dropdown">
+      <button class="nav-btn">SZUKAJ</button>
+      <div class="dropdown-content">
+        <div onclick="location.href='../map/map.html'">Mapa wydarzeń</div>
+        <div onclick="location.href='../list/list.html'">Lista wydarzeń</div>
+        <div>Ranking wydarzeń</div>
+      </div>
+    </div>
+
+    <div class="dropdown">
+      <button class="nav-btn">DODAJ</button>
+      <div class="dropdown-content">
+        <div onclick="location.href='../create/create.html'">Dodaj wydarzenie</div>
+        <div>Dodaj recenzję</div>
+      </div>
+    </div>
+
+    <div class="dropdown">
+  <button class="nav-btn">TWOJE KONTO</button>
+  <div class="dropdown-content">
+    <div onclick="location.href='../profile/profile.html'">Profil</div>
+    <div onclick="location.href='../settings/settings.html'">Ustawienia</div>
+    <div id="logout-btn">Wyloguj się</div>
+  </div>
+</div>
+  </nav>
+</header>
+
+<main class="event-page">
+
+  <div class="event-container">
+
+    <!-- 🔥 TYTUŁ -->
+    <h1 id="event-title"></h1>
+
+    <div class="event-content">
+
+    
+<!-- LEWA -->
+<div class="event-description">
+
+  <div class="rating-box">
+    <div class="rating-header">
+      <img src="../assets/star.png" class="star-icon">
+      <span id="event-rating">ocena 0.0</span>
+    </div>
+
+    
+
+    <div class="rating-actions">
+      <span id="show-reviews">sprawdź recenzje</span>
+      <span id="add-review">dodaj recenzję</span>
+    </div>
+  </div>
+
+  <h3 class="section-title">opis wydarzenia</h3>
+  <div id="event-description"></div>
+
+  <h3 class="amenities-title">udogodnienia</h3>
+  <div id="event-amenities"></div>
+
+</div>
+
+  <!-- PRAWA -->
+  <div class="event-side">
+    <h2 id="event-location"></h2>
+    <p class="event-address" id="event-address"></p>
+
+    <p class="event-date" id="event-date"></p>
+
+    <img src="" class="event-image" id="event-image">
+
+    <a href="#" target="_blank" id="event-link" class="event-link"></a>
+  </div>
+
+</div>
+  </div>
+
+</main>
+<div class="review-modal" id="review-modal">
+
+  <div class="review-box">
+
+    <span class="close-modal" id="close-modal">✕</span>
+
+    <h2>Dodaj recenzję</h2>
+
+    <p>ocena</p>
+
+    <div class="stars" id="stars">
+      <img src="../assets/empty-star.png" data-value="1">
+      <img src="../assets/empty-star.png" data-value="2">
+      <img src="../assets/empty-star.png" data-value="3">
+      <img src="../assets/empty-star.png" data-value="4">
+      <img src="../assets/empty-star.png" data-value="5">
+    </div>
+
+    <p>zrecenzuj wydarzenie</p>
+
+    <textarea id="review-text" class="textarea"></textarea>
+
+    <button id="submit-review" class="submit-btn">opublikuj</button>
+
+  </div>
+</div>
+<div class="reviews-modal" id="reviews-modal">
+
+  <div class="reviews-box">
+
+    <span class="close-modal" id="close-reviews">✕</span>
+
+    <h2>Recenzje</h2>
+
+    <div id="reviews-list"></div>
+
+  </div>
+
+</div>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="../supabase.js"></script>
+<script src="event.js"></script>
+<script src="../start/start.js"></script>
+</body>
+</html>

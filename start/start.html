@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+  <meta charset="UTF-8">
+  <title>Punkt Sztuki</title>
+  <link rel="stylesheet" href="start.css">
+
+  
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+</head>
+<body>
+
+<header class="navbar">
+  <div class="logo" onclick="location.href='start.html'">
+  Punkt Sztuki
+</div>
+
+  <nav class="nav">
+    <div class="dropdown">
+      <button class="nav-btn">SZUKAJ</button>
+      <div class="dropdown-content">
+        <div onclick="location.href='../map/map.html'">Mapa wydarzeń</div>
+        <div onclick="location.href='../list/list.html'">Lista wydarzeń</div>
+        <div>Ranking wydarzeń</div>
+      </div>
+    </div>
+
+    <div class="dropdown">
+      <button class="nav-btn">DODAJ</button>
+      <div class="dropdown-content">
+        <div onclick="location.href='../create/create.html'">Dodaj wydarzenie</div>
+        <div>Dodaj recenzję</div>
+      </div>
+    </div>
+
+    <div class="dropdown">
+  <button class="nav-btn">TWOJE KONTO</button>
+  <div class="dropdown-content">
+    <div onclick="location.href='../profile/profile.html'">Profil</div>
+    <div onclick="location.href='../settings/settings.html'">Ustawienia</div>
+    <div id="logout-btn">Wyloguj się</div>
+  </div>
+</div>
+  </nav>
+</header>
+
+<main class="container">
+  <div class="map"></div>
+
+  <div class="right-panel">
+    <h1>znajdź sztukę<br>wokół siebie</h1>
+
+  <div class="search-wrapper">
+  <input 
+    type="text" 
+    placeholder="wyszukaj adres"
+    class="search-input"
+    id="address-input"
+  >
+
+  <div class="autocomplete-list" id="autocomplete-list"></div>
+</div>
+</main>
+
+<script src="start.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</body>
+</html>

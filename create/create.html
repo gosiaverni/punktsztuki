@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+  <meta charset="UTF-8">
+  <title>Stwórz wydarzenie</title>
+  <link rel="stylesheet" href="../start/start.css">
+</head>
+<body>
+
+<header class="navbar">
+  <div class="logo" onclick="location.href='../start/start.html'">
+    Punkt Sztuki
+  </div>
+
+  <nav class="nav">
+    <div class="dropdown">
+      <button class="nav-btn">SZUKAJ</button>
+      <div class="dropdown-content">
+        <div onclick="location.href='../map/map.html'">Mapa wydarzeń</div>
+        <div onclick="location.href='../list/list.html'">Lista wydarzeń</div>
+        <div>Ranking wydarzeń</div>
+      </div>
+    </div>
+
+    <div class="dropdown">
+      <button class="nav-btn">DODAJ</button>
+      <div class="dropdown-content">
+        <div onclick="location.href='../create/create.html'">Dodaj wydarzenie</div>
+        <div>Dodaj recenzję</div>
+      </div>
+    </div>
+
+   <div class="dropdown">
+  <button class="nav-btn">TWOJE KONTO</button>
+  <div class="dropdown-content">
+    <div onclick="location.href='../profile/profile.html'">Profil</div>
+    <div onclick="location.href='../settings/settings.html'">Ustawienia</div>
+    <div id="logout-btn">Wyloguj się</div>
+  </div>
+</div>
+  </nav>
+</header>
+
+<main class="create-page">
+  <div class="create-outer">
+    <div class="create-container">
+
+    <h1>stwórz wydarzenie</h1>
+
+  <form class="event-form">
+
+  <div class="form-row">
+  <label>nazwa wydarzenia</label>
+  <input type="text" class="input" id="title" placeholder="np. Sposoby widzenia">
+</div>
+
+<div class="form-row">
+  <label>nazwa instytucji</label>
+  <input type="text" class="input" id="institution" placeholder="np. Muzeum Sztuki w Łodzi MS2">
+</div>
+
+<div class="form-row">
+  <label>opis wydarzenia</label>
+  <textarea class="textarea" id="description" placeholder="opisz wydarzenie, jego charakter i dla kogo jest przeznaczone"></textarea>
+</div>
+
+<div class="form-row">
+  <label>czas trwania</label>
+  <div class="date-row">
+    <input type="date" class="input" id="start-date" placeholder="data rozpoczęcia">
+    <span>do</span>
+    <input type="date" class="input" id="end-date" placeholder="data zakończenia">
+  </div>
+</div>
+
+<div class="form-row">
+  <label>lokalizacja</label>
+  <div class="search-wrapper">
+    <input 
+      type="text" 
+      class="input" 
+      id="location"
+      placeholder="wpisz adres"
+    >
+    <div class="autocomplete-list" id="location-list"></div>
+  </div>
+</div>
+<div class="form-row"> <label>zdjęcia</label> <div class="custom-file"> <label for="images" id="file-label" class="file-label"> wybierz zdjęcia </label> <input type="file" multiple id="images"> </div> </div>
+ <div class="form-row">
+  <label>udogodnienia</label>
+
+  <div class="amenities-wrapper">
+
+    <div class="amenities-select placeholder" id="amenities-select">
+  wybierz udogodnienia
+</div>
+
+    <div class="amenities-dropdown" id="amenities-dropdown">
+
+      <label><input type="checkbox" value="podjazd/rampa"> podjazd/rampa</label>
+      <label><input type="checkbox" value="winda"> winda</label>
+      <label><input type="checkbox" value="szerokie przejścia i drzwi"> szerokie przejścia i drzwi</label>
+      <label><input type="checkbox" value="brak progów"> brak progów</label>
+      <label><input type="checkbox" value="toalety dla osób niepełnosprawnych"> toalety dla osób niepełnosprawnych</label>
+      <label><input type="checkbox" value="ławki/krzesła"> ławki/krzesła</label>
+      <label><input type="checkbox" value="opisy w alfabecie Braille"> opisy w alfabecie Braille’a</label>
+      <label><input type="checkbox" value="audioprzewodniki"> audioprzewodniki</label>
+      <label><input type="checkbox" value="makiety/modele dotykowe"> makiety/modele dotykowe</label>
+      <label><input type="checkbox" value="fakturowe oznakowanie podłogi"> fakturowe oznakowania podłogi</label>
+      <label><input type="checkbox" value="tłumaczenia na język migowy"> tłumaczenia na język migowy</label>
+      <label><input type="checkbox" value="napisy do filmów"> napisy do filmów</label>
+      <label><input type="checkbox" value="transkrypcje nagrań"> transkrypcje nagrań</label>
+      <label><input type="checkbox" value="tekst łatwy do czytania ETR"> tekst łatwy do czytania (ETR)</label>
+      <label><input type="checkbox" value="mapy/[przewodniki]"> mapy/przewodniki</label>
+      <label><input type="checkbox" value="ciche godziny"> ciche godziny</label>
+      <label><input type="checkbox" value="strefy wyciszenia"> strefy wyciszenia</label>
+      <label><input type="checkbox" value="bezpłatny wstęp dla opiekuna"> bezpłatny wstęp dla opiekuna</label>
+      <label><input type="checkbox" value="wypożyczenie wózka"> wypożyczenie wózka</label>
+      
+
+    </div>
+
+  </div>
+</div>
+
+
+<div class="form-row">
+  <label>link do wydarzenia</label>
+  <input type="text" class="input" id="event-link" placeholder="np. https://msl.org.pl/sposoby-widzenia-kolekcja-muzeum-sztuki-w-lodzi">
+</div>
+
+
+  <button type="submit" class="submit-btn">dodaj wydarzenie</button>
+
+</form>
+  </div>
+  </div>
+</main>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="../supabase.js"></script>
+<script src="create.js"></script>
+<script src="../start/start.js"></script>
+</body>
+</html>
