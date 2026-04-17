@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="pl">
+    <head>
+  <meta charset="UTF-8">
+  <title>Autoryzacja</title>
+  <link rel="stylesheet" href="../start/start.css">
+</head>
+<body>
+<header class="navbar">
+  <div class="logo" onclick="location.href='../start/start.html'">
+    Punkt Sztuki
+  </div>
+
+  <nav class="nav">
+    <div class="dropdown">
+      <button class="nav-btn">SZUKAJ</button>
+      <div class="dropdown-content">
+        <div onclick="location.href='../map/map.html'">Mapa wydarzeń</div>
+        <div onclick="location.href='../list/list.html'">Lista wydarzeń</div>
+        <div>Ranking wydarzeń</div>
+      </div>
+    </div>
+
+    <div class="dropdown">
+      <button class="nav-btn">DODAJ</button>
+      <div class="dropdown-content">
+        <div onclick="location.href='../create/create.html'">Dodaj wydarzenie</div>
+        <div>Dodaj recenzję</div>
+      </div>
+    </div>
+
+    <button class="nav-btn" onclick="location.href='../auth/auth.html'">
+  ZALOGUJ SIĘ
+</button>
+</div>
+  </nav>
+</header>
+
+<main class="auth-page">
+
+  <div class="auth-container">
+
+    <h1 id="auth-title">Logowanie</h1>
+
+    <form id="auth-form">
+
+      <div class="form-row">
+        <label>adres e-mail</label>
+        <input type="email" id="email" class="input">
+      </div>
+
+      <div class="form-row">
+        <label>hasło</label>
+        <input type="password" id="password" class="input">
+      </div>
+
+      <button type="submit" class="submit-btn" id="auth-btn">
+        zaloguj się
+      </button>
+
+    </form>
+
+    <div class="auth-links">
+      <span id="toggle-auth">Rejestracja</span>
+    </div>
+
+  </div>
+
+</main>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="../supabase.js"></script>
+<script src="auth.js"></script>
+
+</body>
+</html>

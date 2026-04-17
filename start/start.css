@@ -1109,3 +1109,36 @@ filter: brightness(0.85); /* delikatnie przygasza */
   align-items: center;
   justify-content: space-between;
 }
+
+.auth-page {
+  background-color: #f6f2ed;
+  min-height: calc(100vh - 60px);
+  display: flex;
+  justify-content: center;
+  padding: 40px 20px;
+}
+
+.auth-container {
+  background-color: #9d1629;
+  width: 100%;
+  max-width: 700px;
+  border-radius: 25px;
+  padding: 80px;
+  color: #f6f2ed;
+  text-align: center;
+}
+
+.auth-container h1 {
+  font-size: 42px;
+  margin-bottom: 40px;
+}
+
+.auth-links {
+  margin-top: 20px;
+  font-size: 14px;
+}
+
+.auth-links span {
+  cursor: pointer;
+  text-decoration: underline;
+}

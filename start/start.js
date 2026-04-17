@@ -106,3 +106,67 @@ if (input) {
     }
   });
 }
+
+async function renderNavbar() {
+  const { data } = await supabaseClient.auth.getSession();
+  const user = data.session?.user;
+
+  const container = document.getElementById("auth-section");
+
+  if (!container) return;
+
+  if (user) {
+    // ✅ ZALOGOWANY
+    container.innerHTML = `
+      <div class="dropdown">
+        <button class="nav-btn">TWOJE KONTO</button>
+        <div class="dropdown-content">
+          <div onclick="location.href='../profile/profile.html'">Profil</div>
+          <div>Ustawienia</div>
+          <div id="logout-btn">Wyloguj się</div>
+        </div>
+      </div>
+    `;
+
+    // logout
+    document.getElementById("logout-btn").onclick = async () => {
+      await supabaseClient.auth.signOut();
+      location.reload();
+    };
+
+  } else {
+    // ❌ NIEZALOGOWANY
+    container.innerHTML = `
+      <button class="nav-btn" onclick="location.href='../auth/auth.html'">
+        ZALOGUJ SIĘ
+      </button>
+    `;
+  }
+  setupDropdowns();
+}
+function setupDropdowns() {
+  const dropdowns = document.querySelectorAll(".dropdown");
+
+  dropdowns.forEach(drop => {
+    const btn = drop.querySelector(".nav-btn");
+
+    btn.addEventListener("click", (e) => {
+      e.stopPropagation();
+
+      // zamknij inne
+      document.querySelectorAll(".dropdown").forEach(d => {
+        if (d !== drop) d.classList.remove("active");
+      });
+
+      drop.classList.toggle("active");
+    });
+  });
+
+  // klik poza = zamknij
+  document.addEventListener("click", () => {
+    document.querySelectorAll(".dropdown").forEach(d => {
+      d.classList.remove("active");
+    });
+  });
+}
+renderNavbar();
