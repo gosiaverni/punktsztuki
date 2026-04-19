@@ -150,33 +150,30 @@ async function renderNavbar() {
   }
   setupDropdowns();
 }
-function setupDropdowns() {
-  const dropdowns = document.querySelectorAll(".dropdown");
+document.addEventListener("click", (e) => {
 
-  if (!dropdowns.length) return; // 🔥 KLUCZ
+  const button = e.target.closest(".nav-btn");
 
-  dropdowns.forEach(drop => {
-    const btn = drop.querySelector(".nav-btn");
+  // klik w przycisk dropdownu
+  if (button && button.parentElement.classList.contains("dropdown")) {
+    const dropdown = button.parentElement;
 
-    if (!btn) return;
-
-    btn.addEventListener("click", (e) => {
-      e.stopPropagation();
-
-      document.querySelectorAll(".dropdown").forEach(d => {
-        if (d !== drop) d.classList.remove("active");
-      });
-
-      drop.classList.toggle("active");
-    });
-  });
-
-  document.addEventListener("click", () => {
+    // zamknij inne
     document.querySelectorAll(".dropdown").forEach(d => {
-      d.classList.remove("active");
+      if (d !== dropdown) d.classList.remove("active");
     });
+
+    dropdown.classList.toggle("active");
+    e.stopPropagation();
+    return;
+  }
+
+  // klik gdziekolwiek indziej → zamknij wszystko
+  document.querySelectorAll(".dropdown").forEach(d => {
+    d.classList.remove("active");
   });
-}
+
+});
 async function requireAuth(redirectTo) {
   const { data } = await supabaseClient.auth.getSession();
 

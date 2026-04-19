@@ -38,11 +38,21 @@ function formatDate(dateString) {
 const addBtn = document.querySelector(".add-event-btn");
 
 if (addBtn) {
-  addBtn.addEventListener("click", () => {
-    window.location.href = "../create/create.html";
+  addBtn.addEventListener("click", async () => {
+    const { data } = await supabaseClient.auth.getSession();
+
+    if (!data.session) {
+      // 🔥 zapamiętaj gdzie user był
+      localStorage.setItem("redirectAfterLogin", window.location.href);
+
+      window.location.href = "/auth/auth.html";
+      return;
+    }
+
+    // ✅ zalogowany
+    window.location.href = "/create/create.html";
   });
 }
-
 const customIcon = L.icon({
   iconUrl: '../assets/pin.png',
   iconSize: [40, 40],      // dopasuj jeśli trzeba
