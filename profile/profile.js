@@ -16,7 +16,7 @@ init();
 
 // 🎯 UI + EVENTY
 function setupUI() {
-  document.addEventListener("DOMContentLoaded", () => {
+ 
 
     const modal = document.getElementById("profile-modal");
     const editBtn = document.getElementById("edit-profile");
@@ -27,7 +27,9 @@ function setupUI() {
     // 🔥 OTWIERANIE MODALA
     if (editBtn) {
       editBtn.onclick = () => {
-        modal.classList.add("active");
+        if (modal) {
+  modal.classList.add("active");
+}
 
         // focus UX
         document.getElementById("name-input").focus();
@@ -84,7 +86,7 @@ function setupUI() {
       };
     }
 
-  });
+  
 }
 
 
@@ -99,13 +101,17 @@ async function loadProfile() {
     .from("profiles")
     .select("*")
     .eq("user_id", user.id)
-    .single();
+    .maybeSingle();
 
   if (error && error.code !== "PGRST116") {
     console.error("Błąd pobierania profilu:", error);
     return;
   }
-
+  if (!data) {
+  document.getElementById("profile-name").textContent = "Uzupełnij profil";
+  document.getElementById("profile-handle").textContent = "";
+  return;
+}
   if (data) {
     document.getElementById("profile-name").textContent = data.name || "Brak nazwy";
     document.getElementById("profile-handle").textContent = data.handle || "";
@@ -146,4 +152,6 @@ async function saveProfile(name, handle, image = null) {
     console.error("Błąd zapisu:", error);
     alert("Nie udało się zapisać profilu");
   }
+
+
 }
