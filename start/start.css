@@ -1148,3 +1148,17 @@ filter: brightness(0.85); /* delikatnie przygasza */
   flex-direction: column;
   gap: 30px; /* 🔥 zwiększa odstęp między polami */
 }
+
+.profile-box .form-row {
+  display: flex;          /* zamiast grid */
+  flex-direction: column; /* label nad inputem */
+  gap: 6px;
+}
+
+.profile-box .input,
+.profile-box .file-input {
+  width: 100%;           /* 🔥 pełna szerokość */
+}
+.profile-box {
+  margin: auto; /* 🔥 centruje i nie rozciąga */
+}

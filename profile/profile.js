@@ -1,84 +1,68 @@
-const modal = document.getElementById("profile-modal");
-const editBtn = document.getElementById("edit-profile");
-const closeBtn = document.getElementById("close-profile");
+document.addEventListener("DOMContentLoaded", () => {
 
-editBtn.onclick = () => {
-  const savedProfile = JSON.parse(localStorage.getItem("profile"));
+  const modal = document.getElementById("profile-modal");
+  const editBtn = document.getElementById("edit-profile");
+  const closeBtn = document.getElementById("close-profile");
+  const profileBox = document.querySelector(".profile-box");
+  const saveBtn = document.getElementById("save-profile");
 
-  if (savedProfile) {
-    document.getElementById("name-input").value = savedProfile.name || "";
+  // 🔥 OTWIERANIE
+  if (editBtn) {
+    editBtn.onclick = () => {
+      const savedProfile = JSON.parse(localStorage.getItem("profile"));
 
-    // 🔥 usuń @ w input (lepiej się edytuje)
-    let handle = savedProfile.handle || "";
-    if (handle.startsWith("@")) {
-      handle = handle.slice(1);
-    }
+      if (savedProfile) {
+        document.getElementById("name-input").value = savedProfile.name || "";
 
-    document.getElementById("handle-input").value = handle;
-  }
+        let handle = savedProfile.handle || "";
+        if (handle.startsWith("@")) {
+          handle = handle.slice(1);
+        }
 
-  modal.classList.add("active");
-};
-closeBtn.onclick = () => modal.classList.remove("active");
+        document.getElementById("handle-input").value = handle;
+      }
 
-async function loadProfile() {
-  const { data } = await supabaseClient
-    .from("profiles")
-    .select("*")
-    .limit(1)
-    .single();
-
-  if (data) {
-    document.getElementById("profile-name").textContent = data.name;
-    document.getElementById("profile-handle").textContent = data.handle;
-
-    if (data.avatar_url) {
-      document.getElementById("profile-image").src = data.avatar_url;
-    }
-  }
-}
-
-loadProfile();
-
-
-
-// 🔥 zapis
-document.getElementById("save-profile").onclick = () => {
-  const name = document.getElementById("name-input").value;
-  const handle = document.getElementById("handle-input").value;
-  const file = document.getElementById("avatar-input").files[0];
-
-  if (file) {
-    const reader = new FileReader();
-
-    reader.onload = function(e) {
-      saveProfile(name, handle, e.target.result);
+      modal.classList.add("active");
     };
-
-    reader.readAsDataURL(file);
-  } else {
-    saveProfile(name, handle);
-  }
-};
-
-async function saveProfile(name, handle, image = null) {
-
-  if (handle && !handle.startsWith("@")) {
-    handle = "@" + handle;
   }
 
-  await supabaseClient.from("profiles").insert([
-    {
-      name,
-      handle,
-      avatar_url: image
-    }
-  ]);
-
-  location.reload();
-}
-window.addEventListener("click", (e) => {
-  if (e.target === modal) {
-    modal.classList.remove("active");
+  // ❌ ZAMYKANIE X
+  if (closeBtn) {
+    closeBtn.onclick = () => modal.classList.remove("active");
   }
+
+  // ❌ KLIK POZA
+  if (modal && profileBox) {
+    modal.addEventListener("click", (e) => {
+      if (!profileBox.contains(e.target)) {
+        modal.classList.remove("active");
+      }
+    });
+
+    profileBox.addEventListener("click", (e) => {
+      e.stopPropagation();
+    });
+  }
+
+  // 💾 ZAPIS
+  if (saveBtn) {
+    saveBtn.onclick = () => {
+      const name = document.getElementById("name-input").value;
+      const handle = document.getElementById("handle-input").value;
+      const file = document.getElementById("avatar-input").files[0];
+
+      if (file) {
+        const reader = new FileReader();
+
+        reader.onload = function(e) {
+          saveProfile(name, handle, e.target.result);
+        };
+
+        reader.readAsDataURL(file);
+      } else {
+        saveProfile(name, handle);
+      }
+    };
+  }
+
 });
