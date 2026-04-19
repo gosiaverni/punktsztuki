@@ -155,3 +155,81 @@ async function saveProfile(name, handle, image = null) {
 
 
 }
+
+async function loadSavedEvents() {
+  const container = document.getElementById("saved-events");
+  if (!container) return;
+
+  container.innerHTML = "Ładowanie...";
+
+  const { data: userData } = await supabaseClient.auth.getUser();
+  const user = userData.user;
+
+  if (!user) return;
+
+  // 🔥 pobierz zapisane
+  const { data: saved } = await supabaseClient
+    .from("saved_events")
+    .select("event_id")
+    .eq("user_id", user.id);
+
+  if (!saved || saved.length === 0) {
+    container.innerHTML = "<p>Brak zapisanych wydarzeń</p>";
+    return;
+  }
+
+  const ids = saved.map(s => s.event_id);
+
+  // 🔥 pobierz wydarzenia
+  const { data: events } = await supabaseClient
+    .from("events")
+    .select("*")
+    .in("id", ids)
+    .order("created_at", { ascending: false });
+
+  renderSavedEvents(events);
+}
+
+function renderSavedEvents(events) {
+  const container = document.getElementById("saved-events");
+  container.innerHTML = "";
+
+  if (!events || events.length === 0) {
+    container.innerHTML = "<p>Brak zapisanych wydarzeń</p>";
+    return;
+  }
+
+  events.forEach(event => {
+    const card = document.createElement("div");
+    card.classList.add("event-card");
+
+    const formatDate = (d) => {
+      if (!d) return "";
+      const [y, m, day] = d.split("-");
+      return `${day}.${m}.${y}`;
+    };
+
+    card.innerHTML = `
+      <div class="event-card-text">
+        <h3>${event.title}</h3>
+        <p>${event.institution || ""}</p>
+        <div class="event-card-date">
+          do ${formatDate(event.end_date)}
+        </div>
+      </div>
+
+      ${event.images?.length 
+        ? `<img src="${event.images[0]}">`
+        : ""
+      }
+    `;
+
+    card.onclick = () => {
+      window.location.href = `/event?id=${event.id}`;
+    };
+
+    container.appendChild(card);
+  });
+}
+
+loadSavedEvents();

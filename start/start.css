@@ -1164,3 +1164,23 @@ filter: brightness(0.85); /* delikatnie przygasza */
 .profile-box {
   margin: auto; /* 🔥 centruje i nie rozciąga */
 }
+
+.event-header {
+  position: relative; /* 🔥 KLUCZ */
+}
+
+.bookmark-icon {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+
+  width: 26px;
+  height: 26px;
+
+  cursor: pointer;
+  transition: transform 0.15s ease;
+}
+
+.bookmark-icon:hover {
+  transform: scale(1.1);
+}
