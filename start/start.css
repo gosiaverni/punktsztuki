@@ -1142,3 +1142,9 @@ filter: brightness(0.85); /* delikatnie przygasza */
   cursor: pointer;
   text-decoration: underline;
 }
+
+#auth-form {
+  display: flex;
+  flex-direction: column;
+  gap: 30px; /* 🔥 zwiększa odstęp między polami */
+}

@@ -60,7 +60,18 @@ loadEvent();
 
 const modal = document.getElementById("review-modal");
 
-document.getElementById("add-review").onclick = () => {
+document.getElementById("add-review").onclick = async () => {
+  const { data } = await supabaseClient.auth.getSession();
+
+  if (!data.session) {
+    // 🔥 zapamiętaj gdzie user był
+    localStorage.setItem("redirectAfterLogin", window.location.href);
+
+    window.location.href = "/auth/auth.html";
+    return;
+  }
+
+  // ✅ zalogowany → otwieramy modal
   modal.classList.add("active");
 };
 

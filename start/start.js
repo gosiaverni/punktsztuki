@@ -128,12 +128,18 @@ async function renderNavbar() {
       </div>
     `;
 
-    // logout
-    document.getElementById("logout-btn").onclick = async () => {
-      await supabaseClient.auth.signOut();
-      location.reload();
-    };
+   document.getElementById("logout-btn").onclick = async () => {
+  const { error } = await supabaseClient.auth.signOut();
 
+  if (error) {
+    console.error("Logout error:", error);
+    alert("Nie udało się wylogować.");
+    return;
+  }
+
+  // 🔥 zawsze wraca na start
+  window.location.href = "/start/start.html";
+};
   } else {
     // ❌ NIEZALOGOWANY
     container.innerHTML = `
@@ -147,13 +153,16 @@ async function renderNavbar() {
 function setupDropdowns() {
   const dropdowns = document.querySelectorAll(".dropdown");
 
+  if (!dropdowns.length) return; // 🔥 KLUCZ
+
   dropdowns.forEach(drop => {
     const btn = drop.querySelector(".nav-btn");
+
+    if (!btn) return;
 
     btn.addEventListener("click", (e) => {
       e.stopPropagation();
 
-      // zamknij inne
       document.querySelectorAll(".dropdown").forEach(d => {
         if (d !== drop) d.classList.remove("active");
       });
@@ -162,11 +171,20 @@ function setupDropdowns() {
     });
   });
 
-  // klik poza = zamknij
   document.addEventListener("click", () => {
     document.querySelectorAll(".dropdown").forEach(d => {
       d.classList.remove("active");
     });
   });
+}
+async function requireAuth(redirectTo) {
+  const { data } = await supabaseClient.auth.getSession();
+
+  if (!data.session) {
+    window.location.href = "/auth/auth.html";
+    return false;
+  }
+
+  window.location.href = redirectTo;
 }
 renderNavbar();
