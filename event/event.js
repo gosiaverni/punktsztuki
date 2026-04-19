@@ -1,11 +1,19 @@
-
-
 const params = new URLSearchParams(window.location.search);
 const eventId = params.get("id");
+
 if (!eventId) {
   document.body.innerHTML = "<h2>Brak ID wydarzenia</h2>";
   throw new Error("Missing event ID");
 }
+
+let selectedRating = 0;
+const stars = document.querySelectorAll("#stars img");
+const modal = document.getElementById("review-modal");
+const reviewsModal = document.getElementById("reviews-modal");
+
+// =======================
+// 📦 LOAD EVENT
+// =======================
 async function loadEvent() {
   const { data } = await supabaseClient
     .from("events")
@@ -14,26 +22,26 @@ async function loadEvent() {
     .single();
 
   if (!data) {
-  document.body.innerHTML = "<h2>Nie znaleziono wydarzenia</h2>";
-  return;
-}
+    document.body.innerHTML = "<h2>Nie znaleziono wydarzenia</h2>";
+    return;
+  }
 
   const event = data;
 
   document.querySelector("h1").textContent = event.title;
 
   document.getElementById("event-description").innerHTML = `<p>${event.description}</p>`;
-
   document.getElementById("event-location").textContent = event.institution || "";
   document.getElementById("event-address").textContent = event.location || "";
 
- const formatDate = (d) => {
-  const [y,m,day] = d.split("-");
-  return `${day}.${m}.${y}`;
-};
+  const formatDate = (d) => {
+    const [y, m, day] = d.split("-");
+    return `${day}.${m}.${y}`;
+  };
 
-document.querySelector(".event-date").textContent =
-  `od ${formatDate(event.start_date)} do ${formatDate(event.end_date)}`;
+  document.querySelector(".event-date").textContent =
+    `od ${formatDate(event.start_date)} do ${formatDate(event.end_date)}`;
+
   if (event.images?.length) {
     document.querySelector(".event-image").src = event.images[0];
   }
@@ -42,17 +50,16 @@ document.querySelector(".event-date").textContent =
     const linkEl = document.getElementById("event-link");
     let url = event.link;
 
-if (url && !url.startsWith("http")) {
-  url = "https://" + url;
-}
+    if (!url.startsWith("http")) {
+      url = "https://" + url;
+    }
 
-linkEl.href = url;
+    linkEl.href = url;
     linkEl.textContent = "strona wydarzenia";
   }
 
-  // 🔥 DODAJ TO TUTAJ
+  // amenities
   const amenitiesContainer = document.getElementById("event-amenities");
-
   let amenitiesData = event.amenities;
 
   if (typeof amenitiesData === "string") {
@@ -63,57 +70,27 @@ linkEl.href = url;
     }
   }
 
-  if (amenitiesData && amenitiesData.length > 0) {
+  if (amenitiesData?.length) {
     amenitiesContainer.textContent = amenitiesData.join(", ");
   } else {
     amenitiesContainer.style.display = "none";
-
     const title = document.querySelector(".amenities-title");
     if (title) title.style.display = "none";
   }
+
   await loadReviews();
 }
+
 loadEvent();
 
-
-
-const modal = document.getElementById("review-modal");
-
-document.getElementById("add-review").onclick = async () => {
-  const { data } = await supabaseClient.auth.getSession();
-
-  if (!data.session) {
-    // 🔥 zapamiętaj gdzie user był
-    localStorage.setItem("redirectAfterLogin", window.location.href);
-
-    window.location.href = "/auth";
-    return;
-  }
-
-  // ✅ zalogowany → otwieramy modal
-  modal.classList.add("active");
-};
-
-document.getElementById("close-modal").onclick = () => {
-  modal.classList.remove("active");
-};
-document.getElementById("review-text").value = "";
-selectedRating = 0;
-
-stars.forEach(s => {
-  s.src = "/assets/empty-star.png";
-});
-let selectedRating = 0;
-
-const stars = document.querySelectorAll("#stars img");
-
-stars.forEach(star => {
+// =======================
+// ⭐ GWIAZDKI
+// =======================
+stars.forEach((star, index) => {
   star.addEventListener("click", () => {
-    selectedRating = star.dataset.value;
+    selectedRating = index + 1;
 
-    stars.forEach(s => {
-      s.src = "/assets/empty-star.png";
-    });
+    stars.forEach(s => s.src = "/assets/empty-star.png");
 
     for (let i = 0; i < selectedRating; i++) {
       stars[i].src = "/assets/star.png";
@@ -121,34 +98,76 @@ stars.forEach(star => {
   });
 });
 
-document.getElementById("submit-review").onclick = async () => {
+// =======================
+// ➕ DODAJ RECENZJĘ
+// =======================
+const addReviewBtn = document.getElementById("add-review");
 
-  const text = document.getElementById("review-text").value;
+if (addReviewBtn && modal) {
+  addReviewBtn.onclick = async () => {
+    const { data } = await supabaseClient.auth.getSession();
 
-  if (!selectedRating) {
-    alert("Dodaj ocenę");
-    return;
-  }
+    if (!data.session) {
+      localStorage.setItem("redirectAfterLogin", window.location.href);
+      window.location.href = "/auth";
+      return;
+    }
 
-const { error } = await supabaseClient.from("reviews").insert([
-  {
-    event_id: eventId,
-    rating: Number(selectedRating),
-    text
-  }
-]);
+    modal.classList.add("active");
 
-if (error) {
-  alert("Nie udało się dodać recenzji");
-  console.error(error);
-  return;
+    // 🔥 reset formularza
+    selectedRating = 0;
+    document.getElementById("review-text").value = "";
+
+    stars.forEach(s => s.src = "/assets/empty-star.png");
+  };
 }
 
-  modal.classList.remove("active");
+// zamknięcie modala
+const closeModalBtn = document.getElementById("close-modal");
 
-  loadReviews(); // 🔥 odśwież UI
-};
+if (closeModalBtn && modal) {
+  closeModalBtn.onclick = () => {
+    modal.classList.remove("active");
+  };
+}
 
+// =======================
+// 💾 ZAPIS RECENZJI
+// =======================
+const submitBtn = document.getElementById("submit-review");
+
+if (submitBtn) {
+  submitBtn.onclick = async () => {
+    const text = document.getElementById("review-text").value;
+
+    if (!selectedRating) {
+      alert("Dodaj ocenę");
+      return;
+    }
+
+    const { error } = await supabaseClient.from("reviews").insert([
+      {
+        event_id: eventId,
+        rating: selectedRating,
+        text
+      }
+    ]);
+
+    if (error) {
+      alert("Nie udało się dodać recenzji");
+      console.error(error);
+      return;
+    }
+
+    modal.classList.remove("active");
+    loadReviews();
+  };
+}
+
+// =======================
+// 📊 LOAD REVIEWS
+// =======================
 async function loadReviews() {
   const { data: reviews } = await supabaseClient
     .from("reviews")
@@ -158,35 +177,48 @@ async function loadReviews() {
   updateRatingUI(reviews);
 }
 
+// =======================
+// ⭐ ŚREDNIA OCENA
+// =======================
 function updateRatingUI(reviews) {
- if (!reviews || reviews.length === 0) {
-  document.getElementById("event-rating").textContent = "brak ocen";
-  return;
-}
+  const el = document.getElementById("event-rating");
+
+  if (!reviews || reviews.length === 0) {
+    el.textContent = "brak ocen";
+    return;
+  }
 
   const avg =
     reviews.reduce((sum, r) => sum + r.rating, 0) /
     reviews.length;
 
-  document.getElementById("event-rating").textContent =
-    "ocena " + avg.toFixed(1);
+  el.textContent = "ocena " + avg.toFixed(1);
 }
 
+// =======================
+// 📋 MODAL RECENZJI
+// =======================
+const showReviewsBtn = document.getElementById("show-reviews");
 
+if (showReviewsBtn && reviewsModal) {
+  showReviewsBtn.onclick = () => {
+    renderReviews();
+    reviewsModal.classList.add("active");
+  };
+}
 
-const reviewsModal = document.getElementById("reviews-modal");
+const closeReviewsBtn = document.getElementById("close-reviews");
 
-document.getElementById("show-reviews").onclick = () => {
-  renderReviews();
-  reviewsModal.classList.add("active");
-};
+if (closeReviewsBtn && reviewsModal) {
+  closeReviewsBtn.onclick = () => {
+    reviewsModal.classList.remove("active");
+  };
+}
 
-document.getElementById("close-reviews").onclick = () => {
-  reviewsModal.classList.remove("active");
-};
-
+// =======================
+// 🧾 RENDER LISTY RECENZJI
+// =======================
 async function renderReviews() {
-
   const container = document.getElementById("reviews-list");
   container.innerHTML = "";
 
@@ -201,35 +233,32 @@ async function renderReviews() {
   }
 
   reviews.forEach(r => {
-
     const div = document.createElement("div");
     div.classList.add("review-item");
 
-    const stars = document.createElement("div");
-    stars.classList.add("review-stars");
+    const starsDiv = document.createElement("div");
+    starsDiv.classList.add("review-stars");
 
     for (let i = 0; i < r.rating; i++) {
       const img = document.createElement("img");
       img.src = "/assets/star.png";
-      stars.appendChild(img);
+      starsDiv.appendChild(img);
     }
 
     const text = document.createElement("div");
     text.classList.add("review-text");
     text.textContent = r.text;
 
-    div.appendChild(stars);
+    div.appendChild(starsDiv);
     div.appendChild(text);
 
     container.appendChild(div);
   });
 }
 
+// klik poza modal
 window.addEventListener("click", (e) => {
   if (e.target === reviewsModal) {
     reviewsModal.classList.remove("active");
   }
 });
-
-
-
