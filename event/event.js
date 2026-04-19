@@ -1,6 +1,11 @@
+
+
 const params = new URLSearchParams(window.location.search);
 const eventId = params.get("id");
-
+if (!eventId) {
+  document.body.innerHTML = "<h2>Brak ID wydarzenia</h2>";
+  throw new Error("Missing event ID");
+}
 async function loadEvent() {
   const { data } = await supabaseClient
     .from("events")
@@ -8,7 +13,10 @@ async function loadEvent() {
     .eq("id", eventId)
     .single();
 
-  if (!data) return;
+  if (!data) {
+  document.body.innerHTML = "<h2>Nie znaleziono wydarzenia</h2>";
+  return;
+}
 
   const event = data;
 
@@ -19,16 +27,26 @@ async function loadEvent() {
   document.getElementById("event-location").textContent = event.institution || "";
   document.getElementById("event-address").textContent = event.location || "";
 
-  document.querySelector(".event-date").textContent =
-    `od ${event.start_date} do ${event.end_date}`;
+ const formatDate = (d) => {
+  const [y,m,day] = d.split("-");
+  return `${day}.${m}.${y}`;
+};
 
+document.querySelector(".event-date").textContent =
+  `od ${formatDate(event.start_date)} do ${formatDate(event.end_date)}`;
   if (event.images?.length) {
     document.querySelector(".event-image").src = event.images[0];
   }
 
   if (event.link) {
     const linkEl = document.getElementById("event-link");
-    linkEl.href = event.link;
+    let url = event.link;
+
+if (url && !url.startsWith("http")) {
+  url = "https://" + url;
+}
+
+linkEl.href = url;
     linkEl.textContent = "strona wydarzenia";
   }
 
@@ -53,6 +71,7 @@ async function loadEvent() {
     const title = document.querySelector(".amenities-title");
     if (title) title.style.display = "none";
   }
+  await loadReviews();
 }
 loadEvent();
 
@@ -67,7 +86,7 @@ document.getElementById("add-review").onclick = async () => {
     // 🔥 zapamiętaj gdzie user był
     localStorage.setItem("redirectAfterLogin", window.location.href);
 
-    window.location.href = "/auth/auth.html";
+    window.location.href = "/auth";
     return;
   }
 
@@ -78,7 +97,12 @@ document.getElementById("add-review").onclick = async () => {
 document.getElementById("close-modal").onclick = () => {
   modal.classList.remove("active");
 };
+document.getElementById("review-text").value = "";
+selectedRating = 0;
 
+stars.forEach(s => {
+  s.src = "/assets/empty-star.png";
+});
 let selectedRating = 0;
 
 const stars = document.querySelectorAll("#stars img");
@@ -88,11 +112,11 @@ stars.forEach(star => {
     selectedRating = star.dataset.value;
 
     stars.forEach(s => {
-      s.src = "../assets/empty-star.png";
+      s.src = "/assets/empty-star.png";
     });
 
     for (let i = 0; i < selectedRating; i++) {
-      stars[i].src = "../assets/star.png";
+      stars[i].src = "/assets/star.png";
     }
   });
 });
@@ -106,13 +130,19 @@ document.getElementById("submit-review").onclick = async () => {
     return;
   }
 
-  await supabaseClient.from("reviews").insert([
-    {
-      event_id: eventId,
-      rating: Number(selectedRating),
-      text
-    }
-  ]);
+const { error } = await supabaseClient.from("reviews").insert([
+  {
+    event_id: eventId,
+    rating: Number(selectedRating),
+    text
+  }
+]);
+
+if (error) {
+  alert("Nie udało się dodać recenzji");
+  console.error(error);
+  return;
+}
 
   modal.classList.remove("active");
 
@@ -129,7 +159,10 @@ async function loadReviews() {
 }
 
 function updateRatingUI(reviews) {
-  if (!reviews || reviews.length === 0) return;
+ if (!reviews || reviews.length === 0) {
+  document.getElementById("event-rating").textContent = "brak ocen";
+  return;
+}
 
   const avg =
     reviews.reduce((sum, r) => sum + r.rating, 0) /
@@ -177,7 +210,7 @@ async function renderReviews() {
 
     for (let i = 0; i < r.rating; i++) {
       const img = document.createElement("img");
-      img.src = "../assets/star.png";
+      img.src = "/assets/star.png";
       stars.appendChild(img);
     }
 
@@ -200,4 +233,3 @@ window.addEventListener("click", (e) => {
 
 
 
-loadReviews();

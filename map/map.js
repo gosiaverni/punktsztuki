@@ -14,6 +14,8 @@ function isEventExpired(end_Date) {
 
   return eventDate < today;
 }
+
+
 L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
   attribution: '&copy; OpenStreetMap & CartoDB'
 }).addTo(map);
@@ -42,19 +44,16 @@ if (addBtn) {
     const { data } = await supabaseClient.auth.getSession();
 
     if (!data.session) {
-      // 🔥 zapamiętaj gdzie user był
       localStorage.setItem("redirectAfterLogin", window.location.href);
-
-      window.location.href = "/auth/auth.html";
+      window.location.href = "/auth";
       return;
     }
 
-    // ✅ zalogowany
-    window.location.href = "/create/create.html";
+    window.location.href = "/create";
   });
 }
 const customIcon = L.icon({
-  iconUrl: '../assets/pin.png',
+  iconUrl: '/assets/pin.png',
   iconSize: [40, 40],      // dopasuj jeśli trzeba
   iconAnchor: [20, 40],    // środek dole = punkt wbicia
   popupAnchor: [0, -35]    // gdzie pojawia się popup
@@ -95,7 +94,7 @@ loadEvents().then(({ events, reviews }) => {
 
       ratingHTML = `
         <div class="popup-rating">
-          <img src="../assets/star.png" class="popup-star">
+          <img src="/assets/star.png" class="popup-star">
           <span>${avg.toFixed(1)}</span>
         </div>
       `;
@@ -133,7 +132,7 @@ marker.bindPopup(`
 
 
 function openEvent(id) {
-  window.location.href = `../event/event.html?id=${id}`;
+  window.location.href = `/event?id=${id}`;
 }
 
 

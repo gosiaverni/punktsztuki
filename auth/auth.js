@@ -37,7 +37,7 @@ document.getElementById("auth-form").onsubmit = async (e) => {
       return;
     }
 
-    window.location.href = "../map/map.html";
+  window.location.href = "/map";
 
   } else {
     // 📝 REJESTRACJA

@@ -3,12 +3,12 @@
 <head>
   <meta charset="UTF-8">
   <title>Stwórz wydarzenie</title>
-  <link rel="stylesheet" href="../start/start.css">
+  <link rel="stylesheet" href="/start/start.css">
 </head>
 <body>
 
 <header class="navbar">
-  <div class="logo" onclick="location.href='../start/start.html'">
+  <div class="logo" onclick="location.href='/'">
     Punkt Sztuki
   </div>
 
@@ -16,8 +16,8 @@
     <div class="dropdown">
       <button class="nav-btn">SZUKAJ</button>
       <div class="dropdown-content">
-        <div onclick="location.href='../map/map.html'">Mapa wydarzeń</div>
-        <div onclick="location.href='../list/list.html'">Lista wydarzeń</div>
+        <div onclick="location.href='/map'">Mapa wydarzeń</div>
+        <div onclick="location.href='/list'">Lista wydarzeń</div>
         <div>Ranking wydarzeń</div>
       </div>
     </div>
@@ -25,7 +25,7 @@
     <div class="dropdown">
       <button class="nav-btn">DODAJ</button>
       <div class="dropdown-content">
-        <div onclick="requireAuth('/create/create.html')">Dodaj wydarzenie</div>
+        <div onclick="requireAuth('/create')">Dodaj wydarzenie</div>
         
       </div>
     </div>
@@ -130,8 +130,8 @@
   </div>
 </main>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="../supabase.js"></script>
-<script src="create.js"></script>
-<script src="../start/start.js"></script>
+<script src="/supabase.js"></script>
+<script src="/create/create.js"></script>
+<script src="/start/start.js"></script>
 </body>
 </html>

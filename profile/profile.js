@@ -1,68 +1,149 @@
-document.addEventListener("DOMContentLoaded", () => {
+// 🔥 INIT APP
+const init = async () => {
+  const { data: sessionData } = await supabaseClient.auth.getSession();
 
-  const modal = document.getElementById("profile-modal");
-  const editBtn = document.getElementById("edit-profile");
-  const closeBtn = document.getElementById("close-profile");
-  const profileBox = document.querySelector(".profile-box");
-  const saveBtn = document.getElementById("save-profile");
+  if (!sessionData.session) {
+    window.location.href = "/auth";
+    return;
+  }
 
-  // 🔥 OTWIERANIE
-  if (editBtn) {
-    editBtn.onclick = () => {
-      const savedProfile = JSON.parse(localStorage.getItem("profile"));
+  setupUI();
+  loadProfile();
+};
 
-      if (savedProfile) {
-        document.getElementById("name-input").value = savedProfile.name || "";
+init();
 
-        let handle = savedProfile.handle || "";
-        if (handle.startsWith("@")) {
-          handle = handle.slice(1);
+
+// 🎯 UI + EVENTY
+function setupUI() {
+  document.addEventListener("DOMContentLoaded", () => {
+
+    const modal = document.getElementById("profile-modal");
+    const editBtn = document.getElementById("edit-profile");
+    const closeBtn = document.getElementById("close-profile");
+    const profileBox = document.querySelector(".profile-box");
+    const saveBtn = document.getElementById("save-profile");
+
+    // 🔥 OTWIERANIE MODALA
+    if (editBtn) {
+      editBtn.onclick = () => {
+        modal.classList.add("active");
+
+        // focus UX
+        document.getElementById("name-input").focus();
+      };
+    }
+
+    // ❌ ZAMYKANIE X
+    if (closeBtn) {
+      closeBtn.onclick = () => modal.classList.remove("active");
+    }
+
+    // ❌ KLIK POZA MODAL
+    if (modal && profileBox) {
+      modal.addEventListener("click", (e) => {
+        if (!profileBox.contains(e.target)) {
+          modal.classList.remove("active");
+        }
+      });
+
+      profileBox.addEventListener("click", (e) => {
+        e.stopPropagation();
+      });
+    }
+
+    // 💾 ZAPIS
+    if (saveBtn) {
+      saveBtn.onclick = async () => {
+        const name = document.getElementById("name-input").value.trim();
+        let handle = document.getElementById("handle-input").value.trim();
+        const file = document.getElementById("avatar-input").files[0];
+
+        // 🔥 sanitizacja @
+        handle = handle.replace(/^@+/, "");
+        if (handle) handle = "@" + handle;
+
+        let imageBase64 = null;
+
+        if (file) {
+          imageBase64 = await new Promise((resolve) => {
+            const reader = new FileReader();
+            reader.onload = (e) => resolve(e.target.result);
+            reader.readAsDataURL(file);
+          });
         }
 
-        document.getElementById("handle-input").value = handle;
-      }
+        await saveProfile(name, handle, imageBase64);
 
-      modal.classList.add("active");
-    };
-  }
-
-  // ❌ ZAMYKANIE X
-  if (closeBtn) {
-    closeBtn.onclick = () => modal.classList.remove("active");
-  }
-
-  // ❌ KLIK POZA
-  if (modal && profileBox) {
-    modal.addEventListener("click", (e) => {
-      if (!profileBox.contains(e.target)) {
         modal.classList.remove("active");
-      }
-    });
 
-    profileBox.addEventListener("click", (e) => {
-      e.stopPropagation();
-    });
+        // reset inputa pliku
+        document.getElementById("avatar-input").value = "";
+
+        loadProfile(); // 🔥 odśwież UI
+      };
+    }
+
+  });
+}
+
+
+// 📥 LOAD PROFILE (z Supabase)
+async function loadProfile() {
+  const { data: userData } = await supabaseClient.auth.getUser();
+  const user = userData.user;
+
+  if (!user) return;
+
+  const { data, error } = await supabaseClient
+    .from("profiles")
+    .select("*")
+    .eq("user_id", user.id)
+    .single();
+
+  if (error && error.code !== "PGRST116") {
+    console.error("Błąd pobierania profilu:", error);
+    return;
   }
 
-  // 💾 ZAPIS
-  if (saveBtn) {
-    saveBtn.onclick = () => {
-      const name = document.getElementById("name-input").value;
-      const handle = document.getElementById("handle-input").value;
-      const file = document.getElementById("avatar-input").files[0];
+  if (data) {
+    document.getElementById("profile-name").textContent = data.name || "Brak nazwy";
+    document.getElementById("profile-handle").textContent = data.handle || "";
 
-      if (file) {
-        const reader = new FileReader();
+    if (data.avatar_url) {
+      document.getElementById("profile-image").src = data.avatar_url;
+    }
 
-        reader.onload = function(e) {
-          saveProfile(name, handle, e.target.result);
-        };
+    // 🔥 uzupełnij formularz
+    document.getElementById("name-input").value = data.name || "";
 
-        reader.readAsDataURL(file);
-      } else {
-        saveProfile(name, handle);
-      }
-    };
+    let handle = data.handle || "";
+    if (handle.startsWith("@")) handle = handle.slice(1);
+    document.getElementById("handle-input").value = handle;
   }
+}
 
-});
+
+// 💾 SAVE PROFILE (UPSERT)
+async function saveProfile(name, handle, image = null) {
+  const { data: userData } = await supabaseClient.auth.getUser();
+  const user = userData.user;
+
+  if (!user) return;
+
+  const { error } = await supabaseClient
+    .from("profiles")
+    .upsert([
+      {
+        user_id: user.id,
+        name,
+        handle,
+        avatar_url: image
+      }
+    ], { onConflict: ["user_id"] });
+
+  if (error) {
+    console.error("Błąd zapisu:", error);
+    alert("Nie udało się zapisać profilu");
+  }
+}

@@ -1,5 +1,13 @@
 {
   "routes": [
-    { "src": "/", "dest": "/start/start.html" }
+    
+
+    { "src": "^/$", "dest": "/start/start.html" },
+    { "src": "^/map$", "dest": "/map/map.html" },
+    { "src": "^/create$", "dest": "/create/create.html" },
+    { "src": "^/list$", "dest": "/list/list.html" },
+    { "src": "^/event$", "dest": "/event/event.html" },
+    { "src": "^/profile$", "dest": "/profile/profile.html" },
+    { "src": "^/auth$", "dest": "/auth/auth.html" }
   ]
 }

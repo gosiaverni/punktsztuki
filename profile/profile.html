@@ -3,12 +3,12 @@
 <head>
   <meta charset="UTF-8">
   <title>Profil</title>
-  <link rel="stylesheet" href="../start/start.css">
+  <link rel="stylesheet" href="/start/start.css">
 </head>
 <body>
 
 <header class="navbar">
-  <div class="logo" onclick="location.href='../start/start.html'">
+  <div class="logo" onclick="location.href='/'">
     Punkt Sztuki
   </div>
 
@@ -16,20 +16,20 @@
     <div class="dropdown">
       <button class="nav-btn">SZUKAJ</button>
       <div class="dropdown-content">
-        <div onclick="location.href='../map/map.html'">Mapa wydarzeń</div>
-        <div onclick="location.href='../list/list.html'">Lista wydarzeń</div>
+        <div onclick="location.href='/map'">Mapa wydarzeń</div>
+        <div onclick="location.href='/list'">Lista wydarzeń</div>
       </div>
     </div>
 
     <div class="dropdown">
       <button class="nav-btn">DODAJ</button>
       <div class="dropdown-content">
-        <div onclick="requireAuth('/create/create.html')">Dodaj wydarzenie</div>
+        <div onclick="requireAuth('/create')">Dodaj wydarzenie</div>
       </div>
     </div>
 
     <div id="auth-section"></div>
-    </div>
+    
   </nav>
 </header>
 
@@ -42,7 +42,7 @@
     <!-- 🔥 KARTA PROFILU -->
     <div class="profile-card">
 
-      <img src="../assets/star.png" id="profile-image" class="profile-avatar">
+      <img src="/assets/star.png" id="profile-image" class="profile-avatar">
 
       <div class="profile-info">
         <h2 id="profile-name">Twoje imię</h2>
@@ -65,33 +65,35 @@
 
   <div class="profile-box">
 
-    <span class="close-modal" id="close-profile">✕</span>
+  <span class="close-modal" id="close-profile">✕</span>
 
-    <h2>Edytuj profil</h2>
+  <h2>Edytuj profil</h2>
 
-   <div class="form-row">
-  <label>zdjęcie profilowe</label>
-  <input type="file" id="avatar-input" class="file-input">
-</div>
-
-<div class="form-row">
-  <label>nazwa profilu</label>
-  <input type="text" id="name-input" class="input" placeholder="imię i nazwisko">
-</div>
-
-<div class="form-row">
-  <label>username</label>
-  <input type="text" id="handle-input" class="input" placeholder="@handle">
-</div>
-
+  <div class="form-row">
+    <label>zdjęcie profilowe</label>
+    <input type="file" id="avatar-input" class="file-input">
   </div>
 
+  <div class="form-row">
+    <label>nazwa profilu</label>
+    <input type="text" id="name-input" class="input" placeholder="imię i nazwisko">
+  </div>
+
+  <div class="form-row">
+    <label>username</label>
+    <input type="text" id="handle-input" class="input" placeholder="@handle">
+  </div>
+
+  <!-- 🔥 TU -->
+  <button id="save-profile" class="submit-btn">zapisz</button>
+
+</div>
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="../supabase.js"></script>
-<script src="profile.js"></script>
-<script src="../start/start.js"></script>
+<script src="/supabase.js"></script>
+<script src="/profile/profile.js"></script>
+<script src="/start/start.js"></script>
 
 </body>
 </html>

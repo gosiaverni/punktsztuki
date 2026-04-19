@@ -3,13 +3,13 @@
 <head>
   <meta charset="UTF-8">
   <title>Mapa wydarzeń</title>
-  <link rel="stylesheet" href="../start/start.css">
+  <link rel="stylesheet" href="/start/start.css">
   <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
 </head>
 <body>
 
 <header class="navbar">
-  <div class="logo" onclick="location.href='../start/start.html'">
+  <div class="logo" onclick="location.href='/'">
   Punkt Sztuki
 </div>
 
@@ -17,8 +17,8 @@
     <div class="dropdown">
       <button class="nav-btn">SZUKAJ</button>
       <div class="dropdown-content">
-        <div onclick="location.href='map.html'">Mapa wydarzeń</div>
-        <div onclick="location.href='../list/list.html'">Lista wydarzeń</div>
+        <div onclick="location.href='/map'">Mapa wydarzeń</div>
+        <div onclick="location.href='/list'">Lista wydarzeń</div>
         <div>Ranking wydarzeń</div>
       </div>
     </div>
@@ -26,18 +26,17 @@
     <div class="dropdown">
       <button class="nav-btn">DODAJ</button>
       <div class="dropdown-content">
-        <div onclick="requireAuth('/create/create.html')">Dodaj wydarzenie</div>
+        <div onclick="requireAuth('/create')">Dodaj wydarzenie</div>
         
       </div>
     </div>
 
    <div id="auth-section"></div>
-  </div>
-</div>
-  </nav>
+</nav>
+  
 </header>
 <div class="add-event-btn">
-  <img src="../assets/add.png">
+  <img src="/assets/add.png" alt="dodaj wydarzenie">
 </div>
 
 <main class="map-page">
@@ -45,10 +44,10 @@
 </main>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="../supabase.js"></script>
-<script src="../start/start.js"></script>
+<script src="/supabase.js"></script>
+<script src="/start/start.js"></script>
 <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
-<script src="map.js"></script>
+<script src="/map/map.js"></script>
 
 </body>
 </html>

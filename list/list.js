@@ -13,11 +13,18 @@ async function loadEvents() {
 }
 
 function renderEvents(events, city) {
-  container.innerHTML = "";
+  container.innerHTML = "<p>Ładowanie...</p>";
 
   const filtered = events.filter(e =>
-    e.location?.toLowerCase().includes(city.toLowerCase())
+    !city || e.location?.toLowerCase().includes(city.toLowerCase())
   );
+
+  if (filtered.length === 0) {
+    container.innerHTML = "<p>Brak wydarzeń dla wybranego miasta</p>";
+    return;
+  }
+
+  container.innerHTML = "";
 
   title.textContent = city ? `${city}` : "wydarzenia";
 
@@ -25,18 +32,16 @@ function renderEvents(events, city) {
     const card = document.createElement("div");
     card.classList.add("event-card");
 
-    function formatDate(dateStr) {
+    const formatDate = (dateStr) => {
       if (!dateStr) return "";
       const [year, month, day] = dateStr.split("-");
       return `${day}.${month}.${year}`;
-    }
+    };
 
     card.innerHTML = `
       <div class="event-card-text">
         <h3>${event.title}</h3>
-
         <p>${event.institution || ""}</p>
-
         <div class="event-card-date">
           do ${formatDate(event.end_date)}
         </div>
@@ -49,7 +54,7 @@ function renderEvents(events, city) {
     `;
 
     card.addEventListener("click", () => {
-      window.location.href = `/event/event.html?id=${event.id}`;
+      window.location.href = `/event?id=${event.id}`;
     });
 
     container.appendChild(card);
