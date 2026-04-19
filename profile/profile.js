@@ -151,6 +151,7 @@ async function saveProfile(name, handle, image = null) {
   if (error) {
     console.error("Błąd zapisu:", error);
     alert("Nie udało się zapisać profilu");
+    return;
   }
 
 
