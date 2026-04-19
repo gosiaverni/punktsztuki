@@ -1,4 +1,3 @@
-// 🔥 INIT APP
 const init = async () => {
   const { data: sessionData } = await supabaseClient.auth.getSession();
 
@@ -9,6 +8,7 @@ const init = async () => {
 
   setupUI();
   loadProfile();
+  loadSavedEvents(); // 🔥 TU
 };
 
 init();
@@ -233,4 +233,3 @@ function renderSavedEvents(events) {
   });
 }
 
-loadSavedEvents();
