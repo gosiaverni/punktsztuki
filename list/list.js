@@ -2,13 +2,21 @@ const container = document.getElementById("events-container");
 const select = document.getElementById("city-select");
 const title = document.getElementById("city-title");
 
-const events = JSON.parse(localStorage.getItem("events")) || [];
+let allEvents = [];
 
-function renderEvents(city) {
+async function loadEvents() {
+  const { data: events } = await supabaseClient
+    .from("events")
+    .select("*");
+
+  return events || [];
+}
+
+function renderEvents(events, city) {
   container.innerHTML = "";
 
   const filtered = events.filter(e =>
-    e.location.toLowerCase().includes(city.toLowerCase())
+    e.location?.toLowerCase().includes(city.toLowerCase())
   );
 
   title.textContent = city ? `${city}` : "wydarzenia";
@@ -17,58 +25,44 @@ function renderEvents(city) {
     const card = document.createElement("div");
     card.classList.add("event-card");
 
-    let ratingHTML = "";
+    function formatDate(dateStr) {
+      if (!dateStr) return "";
+      const [year, month, day] = dateStr.split("-");
+      return `${day}.${month}.${year}`;
+    }
 
-if (event.reviews && event.reviews.length > 0) {
-  const avg =
-    event.reviews.reduce((sum, r) => sum + r.rating, 0) /
-    event.reviews.length;
+    card.innerHTML = `
+      <div class="event-card-text">
+        <h3>${event.title}</h3>
 
-  ratingHTML = `
-    <div class="event-rating">
-      <img src="../assets/star.png" class="rating-star">
-      <span>${avg.toFixed(1)}</span>
-    </div>
-  `;
-}
+        <p>${event.institution || ""}</p>
 
-function formatDate(dateStr) {
-  const date = new Date(dateStr);
-  return date.toLocaleDateString("pl-PL");
-}
+        <div class="event-card-date">
+          do ${formatDate(event.end_date)}
+        </div>
+      </div>
 
-card.innerHTML = `
-  <div class="event-card-text">
-    <h3>${event.title}</h3>
+      ${event.images?.length 
+        ? `<img src="${event.images[0]}">`
+        : ""
+      }
+    `;
 
-    ${ratingHTML}
-
-    <p>${event.institution || ""}</p>
-
-    <div class="event-card-date">
-      do ${formatDate(event.endDate)}
-    </div>
-  </div>
-
-  ${event.images && event.images.length > 0 
-    ? `<img src="${event.images[0]}">`
-    : ""
-  }
-`;
-
-    // 🔥 klik → event page
     card.addEventListener("click", () => {
-      window.location.href = `../event/event.html?id=${event.id}`;
+      window.location.href = `/event/event.html?id=${event.id}`;
     });
 
     container.appendChild(card);
   });
 }
 
-// wybór miasta
-select.addEventListener("change", () => {
-  renderEvents(select.value);
+// 🔥 start
+loadEvents().then(events => {
+  allEvents = events;
+  renderEvents(allEvents, "");
 });
 
-// start
-renderEvents("");
+// 🔥 select
+select.addEventListener("change", () => {
+  renderEvents(allEvents, select.value);
+});
