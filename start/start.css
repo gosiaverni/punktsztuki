@@ -15,6 +15,10 @@
   src: url('../assets/fonts/OpenSauceOne-ExtraBold.ttf') format('truetype');
   font-weight: 700;
 }
+
+h1 {
+  font-size: clamp(28px, 5vw, 64px);
+}
 .nav-btn.active {
   font-weight: 600;
 }
