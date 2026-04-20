@@ -10,7 +10,9 @@ const checkAuth = async () => {
   }
 };
 
-await checkAuth(); // 🔥 ważne
+(async () => {
+  await checkAuth();
+})();
 
 // 🚀 SUBMIT
 form.addEventListener("submit", async function(e) {
