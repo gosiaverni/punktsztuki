@@ -1184,3 +1184,18 @@ filter: brightness(0.85); /* delikatnie przygasza */
 .bookmark-icon:hover {
   transform: scale(1.1);
 }
+
+#amenities-select {
+  position: relative;
+  z-index: 9999;
+}
+
+#amenities-dropdown {
+  position: relative;
+  z-index: 9999;
+}
+
+#location {
+  position: relative;
+  z-index: 9999;
+}

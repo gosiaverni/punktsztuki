@@ -1,30 +1,12 @@
 document.addEventListener("DOMContentLoaded", async () => {
   const form = document.querySelector(".event-form");
+  if (!form) return;
 
-  if (!form) {
-    console.error("❌ Nie znaleziono formularza (.event-form)");
-    return;
-  }
+  // ✅ UI
+  initAmenities();
+  initAutocomplete();
 
-  // 🔐 AUTH GUARD
-  const checkAuth = async () => {
-    try {
-      const { data, error } = await supabaseClient.auth.getSession();
-
-      if (error) {
-        console.error("Auth error:", error);
-        return;
-      }
-
-      if (!data.session) {
-        localStorage.setItem("redirectAfterLogin", window.location.pathname);
-        window.location.href = "/auth";
-      }
-    } catch (err) {
-      console.error("Auth crash:", err);
-    }
-  };
-
+  // 🔐 AUTH
   await checkAuth();
 
   // 🚀 SUBMIT
@@ -33,7 +15,6 @@ document.addEventListener("DOMContentLoaded", async () => {
     console.log("🚀 Submit start");
 
     try {
-      // 📥 INPUTY
       const title = document.getElementById("title")?.value.trim();
       const description = document.getElementById("description")?.value.trim();
       const startDate = document.getElementById("start-date")?.value;
@@ -43,28 +24,23 @@ document.addEventListener("DOMContentLoaded", async () => {
       const link = document.getElementById("event-link")?.value.trim();
       const imageInput = document.getElementById("images");
 
-      // 🧠 WALIDACJA
       if (!title || !location || !startDate) {
-        alert("Uzupełnij wymagane pola (tytuł, lokalizacja, data).");
+        alert("Uzupełnij wymagane pola.");
         return;
       }
 
-      // 🧩 AMENITIES
       const amenities = Array.from(
         document.querySelectorAll("#amenities-dropdown input:checked")
       ).map(el => el.value);
 
-      // 📸 IMAGES → base64
       let images = [];
 
       if (imageInput?.files?.length > 0) {
         const imagePromises = Array.from(imageInput.files).map(file => {
           return new Promise((resolve, reject) => {
             const reader = new FileReader();
-
             reader.onload = e => resolve(e.target.result);
-            reader.onerror = err => reject(err);
-
+            reader.onerror = reject;
             reader.readAsDataURL(file);
           });
         });
@@ -72,112 +48,114 @@ document.addEventListener("DOMContentLoaded", async () => {
         images = await Promise.all(imagePromises);
       }
 
-      console.log("📸 Images processed:", images.length);
-
-      // 🌍 GEOLOC
       const res = await fetch(
         `https://corsproxy.io/?https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(location)}`
       );
 
       const geoData = await res.json();
 
-      if (!geoData || geoData.length === 0) {
+      if (!geoData.length) {
         alert("Nie znaleziono lokalizacji.");
-        document.getElementById("location")?.focus();
         return;
       }
 
-      const lat = geoData[0].lat;
-      const lon = geoData[0].lon;
-
-      console.log("📍 Coordinates:", lat, lon);
-
-      // 💾 INSERT DO SUPABASE
-      const { error } = await supabaseClient
-        .from("events")
-        .insert([
-          {
-            title,
-            description,
-            start_date: startDate,
-            end_date: endDate,
-            location,
-            lat,
-            lon,
-            institution,
-            link,
-            images,
-            amenities
-          }
-        ]);
+      const { error } = await supabaseClient.from("events").insert([{
+        title,
+        description,
+        start_date: startDate,
+        end_date: endDate,
+        location,
+        lat: geoData[0].lat,
+        lon: geoData[0].lon,
+        institution,
+        link,
+        images,
+        amenities
+      }]);
 
       if (error) {
-        console.error("❌ DB error:", error);
-        alert("Nie udało się zapisać wydarzenia.");
+        console.error(error);
+        alert("Błąd zapisu.");
         return;
       }
 
-      console.log("✅ Event zapisany");
-
-      // 🔁 REDIRECT
       window.location.href = "/map";
 
     } catch (err) {
-      console.error("💥 Submit crash:", err);
+      console.error(err);
       alert("Coś poszło nie tak.");
     }
   });
 });
 
-const locationInput = document.getElementById("location");
-const locationList = document.getElementById("location-list");
 
-locationInput.addEventListener("input", async () => {
-  const query = locationInput.value.trim();
+// 🔐 AUTH
+async function checkAuth() {
+  const { data } = await supabaseClient.auth.getSession();
 
-  if (query.length < 3) {
-    locationList.innerHTML = "";
-    return;
+  if (!data.session) {
+    localStorage.setItem("redirectAfterLogin", window.location.pathname);
+    window.location.href = "/auth";
   }
+}
 
-  try {
-    const res = await fetch(
-      `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(query)}`
-    );
 
-    const data = await res.json();
+// 🎯 AMENITIES
+function initAmenities() {
+  const select = document.getElementById("amenities-select");
+  const dropdown = document.getElementById("amenities-dropdown");
 
-    locationList.innerHTML = data
-      .slice(0, 5)
-      .map(place => `
-        <div class="autocomplete-item">
-          ${place.display_name}
-        </div>
-      `)
-      .join("");
+  if (!select || !dropdown) return;
 
-    document.querySelectorAll(".autocomplete-item").forEach((item, i) => {
-      item.addEventListener("click", () => {
-        locationInput.value = data[i].display_name;
-        locationList.innerHTML = "";
+  select.addEventListener("click", () => {
+    dropdown.classList.toggle("active");
+  });
+
+  document.addEventListener("click", (e) => {
+    if (!select.contains(e.target) && !dropdown.contains(e.target)) {
+      dropdown.classList.remove("active");
+    }
+  });
+}
+
+
+// 🔍 AUTOCOMPLETE
+function initAutocomplete() {
+  const input = document.getElementById("location");
+  const list = document.getElementById("location-list");
+
+  if (!input || !list) return;
+
+  input.addEventListener("input", async () => {
+    const query = input.value.trim();
+
+    if (query.length < 3) {
+      list.innerHTML = "";
+       list.classList.remove("active");
+      return;
+    }
+
+    try {
+      const res = await fetch(
+        `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(query)}`
+      );
+
+      const data = await res.json();
+
+      list.innerHTML = data.slice(0, 5).map(place => `
+        <div class="autocomplete-item">${place.display_name}</div>
+      `).join("");
+      list.classList.add("active"); 
+
+      document.querySelectorAll(".autocomplete-item").forEach((el, i) => {
+        el.addEventListener("click", () => {
+          input.value = data[i].display_name;
+          list.innerHTML = "";
+        });
       });
-    });
 
-  } catch (err) {
-    console.error("Autocomplete error:", err);
-  }
-});
-
-const select = document.getElementById("amenities-select");
-const dropdown = document.getElementById("amenities-dropdown");
-
-select.addEventListener("click", () => {
-  dropdown.classList.toggle("open");
-});
-
-// zamykanie po kliknięciu poza
-document.addEventListener("click", (e) => {
-  if (!select.contains(e.target) && !dropdown.contains(e.target)) {
-    dropdown.classList.remove("open");
-  }
-});
+    } catch (err) {
+      console.error(err);
+    }
+  });
+}
