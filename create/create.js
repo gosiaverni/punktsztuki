@@ -128,3 +128,56 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
   });
 });
+
+const locationInput = document.getElementById("location");
+const locationList = document.getElementById("location-list");
+
+locationInput.addEventListener("input", async () => {
+  const query = locationInput.value.trim();
+
+  if (query.length < 3) {
+    locationList.innerHTML = "";
+    return;
+  }
+
+  try {
+    const res = await fetch(
+      `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(query)}`
+    );
+
+    const data = await res.json();
+
+    locationList.innerHTML = data
+      .slice(0, 5)
+      .map(place => `
+        <div class="autocomplete-item">
+          ${place.display_name}
+        </div>
+      `)
+      .join("");
+
+    document.querySelectorAll(".autocomplete-item").forEach((item, i) => {
+      item.addEventListener("click", () => {
+        locationInput.value = data[i].display_name;
+        locationList.innerHTML = "";
+      });
+    });
+
+  } catch (err) {
+    console.error("Autocomplete error:", err);
+  }
+});
+
+const select = document.getElementById("amenities-select");
+const dropdown = document.getElementById("amenities-dropdown");
+
+select.addEventListener("click", () => {
+  dropdown.classList.toggle("open");
+});
+
+// zamykanie po kliknięciu poza
+document.addEventListener("click", (e) => {
+  if (!select.contains(e.target) && !dropdown.contains(e.target)) {
+    dropdown.classList.remove("open");
+  }
+});
