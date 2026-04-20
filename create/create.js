@@ -49,8 +49,13 @@ document.addEventListener("DOMContentLoaded", async () => {
       }
 
       const res = await fetch(
-        `https://corsproxy.io/?https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(location)}`
-      );
+  `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(location)}`,
+  {
+    headers: {
+      "Accept": "application/json"
+    }
+  }
+);
 
       const geoData = await res.json();
 
