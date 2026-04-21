@@ -1,3 +1,8 @@
+const GEOCODE_URL = "https://xlcjmhhaxjnizmpoqkoa.supabase.co/functions/v1/geocode";
+
+// jeśli używasz globalnego klienta:
+const supabaseClient = window.supabaseClient;
+
 document.addEventListener("DOMContentLoaded", async () => {
   const form = document.querySelector(".event-form");
   if (!form) return;
@@ -48,22 +53,23 @@ document.addEventListener("DOMContentLoaded", async () => {
         images = await Promise.all(imagePromises);
       }
 
+      // 🌍 GEOCODE
       const res = await fetch(
-  `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(location)}`,
-  {
-    headers: {
-      "Accept": "application/json"
-    }
-  }
-);
+        `${GEOCODE_URL}?q=${encodeURIComponent(location)}`
+      );
+
+      if (!res.ok) {
+        throw new Error("Geocode API error");
+      }
 
       const geoData = await res.json();
 
-      if (!geoData.length) {
+      if (!Array.isArray(geoData) || !geoData.length) {
         alert("Nie znaleziono lokalizacji.");
         return;
       }
 
+      // 💾 SAVE
       const { error } = await supabaseClient.from("events").insert([{
         title,
         description,
@@ -136,26 +142,37 @@ function initAutocomplete() {
 
     if (query.length < 3) {
       list.innerHTML = "";
-       list.classList.remove("active");
+      list.classList.remove("active");
       return;
     }
 
     try {
       const res = await fetch(
-        `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(query)}`
+        `${GEOCODE_URL}?q=${encodeURIComponent(query)}`
       );
+
+      if (!res.ok) {
+        throw new Error("Autocomplete API error");
+      }
 
       const data = await res.json();
 
-      list.innerHTML = data.slice(0, 5).map(place => `
+      if (!Array.isArray(data)) {
+        console.error("Invalid data:", data);
+        return;
+      }
+
+      list.innerHTML = data.map(place => `
         <div class="autocomplete-item">${place.display_name}</div>
       `).join("");
-      list.classList.add("active"); 
+
+      list.classList.add("active");
 
       document.querySelectorAll(".autocomplete-item").forEach((el, i) => {
         el.addEventListener("click", () => {
           input.value = data[i].display_name;
           list.innerHTML = "";
+          list.classList.remove("active");
         });
       });
 
