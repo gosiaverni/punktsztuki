@@ -3,15 +3,55 @@
 <head>
   <meta charset="UTF-8">
   <title>Mapa wydarzeń</title>
+
   <link rel="stylesheet" href="/start/start.css">
   <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+
+  <style>
+    #map {
+      height: 100vh;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+
+    #map.visible {
+      opacity: 1;
+    }
+
+    .map-loader {
+      position: absolute;
+      inset: 0;
+      background: white;
+      z-index: 9999;
+
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+
+      transition: opacity 0.3s ease;
+    }
+
+    .spinner {
+      width: 40px;
+      height: 40px;
+      border: 4px solid #ddd;
+      border-top: 4px solid black;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+      margin-bottom: 10px;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+  </style>
 </head>
+
 <body>
 
 <header class="navbar">
-  <div class="logo" onclick="location.href='/'">
-  Punkt Sztuki
-</div>
+  <div class="logo" onclick="location.href='/'">Punkt Sztuki</div>
 
   <nav class="nav">
     <div class="dropdown">
@@ -19,7 +59,6 @@
       <div class="dropdown-content">
         <div onclick="location.href='/map'">Mapa wydarzeń</div>
         <div onclick="location.href='/list'">Lista wydarzeń</div>
-        
       </div>
     </div>
 
@@ -27,25 +66,30 @@
       <button class="nav-btn">DODAJ</button>
       <div class="dropdown-content">
         <div onclick="requireAuth('/create')">Dodaj wydarzenie</div>
-        
       </div>
     </div>
 
-   <div id="auth-section"></div>
-</nav>
-  
+    <div id="auth-section"></div>
+  </nav>
 </header>
+
 <div class="add-event-btn">
-  <img src="/assets/add.png" alt="dodaj wydarzenie">
+  <img src="/assets/add.png">
 </div>
 
+<!-- 🔥 LOADER -->
+<div id="map-loader" class="map-loader">
+  <div class="spinner"></div>
+  <p>Ładowanie mapy...</p>
+</div>
+
+<!-- ✅ TYLKO JEDNA MAPA -->
 <main class="map-page">
   <div id="map"></div>
 </main>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="/supabase.js"></script>
-<script src="/start/start.js"></script>
 <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
 <script src="/map/map.js"></script>
 
