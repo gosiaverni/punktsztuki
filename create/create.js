@@ -111,22 +111,43 @@ async function checkAuth() {
 }
 
 
-// 🎯 AMENITIES
 function initAmenities() {
   const select = document.getElementById("amenities-select");
   const dropdown = document.getElementById("amenities-dropdown");
 
   if (!select || !dropdown) return;
 
+  const updateSelectedText = () => {
+    const selected = Array.from(
+      dropdown.querySelectorAll("input:checked")
+    ).map(el => el.value);
+
+    if (selected.length === 0) {
+      select.textContent = "Wybierz udogodnienia";
+    } else {
+      select.textContent = selected.join(", ");
+    }
+  };
+
+  // otwieranie dropdownu
   select.addEventListener("click", () => {
     dropdown.classList.toggle("active");
   });
 
+  // klik poza
   document.addEventListener("click", (e) => {
     if (!select.contains(e.target) && !dropdown.contains(e.target)) {
       dropdown.classList.remove("active");
     }
   });
+
+  // 🔥 KLUCZ — reagowanie na klik checkboxów
+  dropdown.querySelectorAll("input").forEach(input => {
+    input.addEventListener("change", updateSelectedText);
+  });
+
+  // inicjalny stan
+  updateSelectedText();
 }
 function formatAddress(place) {
   const addr = place.address || {};
