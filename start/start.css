@@ -1201,36 +1201,6 @@ filter: brightness(0.85); /* delikatnie przygasza */
 }
 
 .map-loader {
-  position: absolute;
-  inset: 0;
-  background: white;
-  z-index: 9999;
-
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-
-  transition: opacity 0.3s ease;
+  pointer-events: none; /* 🔥 TO JEST KLUCZ */
 }
 
-.map-loader.hidden {
-  opacity: 0;
-  pointer-events: none;
-}
-
-.spinner {
-  width: 40px;
-  height: 40px;
-  border: 4px solid #ddd;
-  border-top: 4px solid black;
-  border-radius: 50%;
-  animation: spin 1s linear infinite;
-  margin-bottom: 10px;
-}
-
-@keyframes spin {
-  to {
-    transform: rotate(360deg);
-  }
-}

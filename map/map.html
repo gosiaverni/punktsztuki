@@ -22,7 +22,7 @@
       position: absolute;
       inset: 0;
       background: white;
-      z-index: 9999;
+      z-index: 10;
 
       display: flex;
       flex-direction: column;
@@ -77,19 +77,25 @@
   <img src="/assets/add.png">
 </div>
 
-<!-- 🔥 LOADER -->
-<div id="map-loader" class="map-loader">
-  <div class="spinner"></div>
-  <p>Ładowanie mapy...</p>
-</div>
 
-<!-- ✅ TYLKO JEDNA MAPA -->
+
 <main class="map-page">
-  <div id="map"></div>
+  <div class="map-container">
+
+    <div id="map-loader" class="map-loader">
+      <div class="spinner"></div>
+      <p>Ładowanie mapy...</p>
+    </div>
+
+    <div id="map"></div>
+
+  </div>
 </main>
+
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="/supabase.js"></script>
+<script src="/start/start.js"></script>
 <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
 <script src="/map/map.js"></script>
 
