@@ -41,7 +41,18 @@ async function loadEvent() {
 
   document.getElementById("event-description").innerHTML = `<p>${event.description}</p>`;
   document.getElementById("event-location").textContent = event.institution || "";
-  document.getElementById("event-address").textContent = event.location || "";
+ function shortenAddress(full) {
+  if (!full) return "";
+
+  const parts = full.split(",");
+
+  // próbujemy wyciągnąć:
+  // ulica + nr + kod + miasto
+  return parts.slice(0, 3).join(",").trim();
+}
+
+document.getElementById("event-address").textContent =
+  shortenAddress(event.location);
 
   const formatDate = (d) => {
     const [y, m, day] = d.split("-");
