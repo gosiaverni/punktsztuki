@@ -55,6 +55,12 @@ async function loadEvents() {
   return { events: events || [], reviews: reviews || [] };
 }
 
+function formatDate(dateString) {
+  if (!dateString) return "";
+
+  const [year, month, day] = dateString.split("-");
+  return `${day}.${month}.${year}`;
+}
 
 // 🚀 START
 (async () => {
@@ -90,12 +96,32 @@ async function loadEvents() {
       }
 
       marker.bindPopup(`
-        <div class="popup-card" onclick="openEvent('${event.id}')">
-          <h3>${event.title}</h3>
-          ${ratingHTML}
-          <p>${event.institution || ""}</p>
-        </div>
-      `);
+  <div class="popup-card" onclick="openEvent('${event.id}')">
+
+    <h3 class="popup-title">${event.title}</h3>
+
+    <div class="popup-content">
+
+      <div class="popup-text">
+
+        ${ratingHTML}
+
+        <p class="popup-place">${event.institution || ""}</p>
+
+        <p class="popup-date">
+          do ${formatDate(event.end_date)}
+        </p>
+
+      </div>
+
+      ${event.images?.length 
+        ? `<img src="${event.images[0]}" class="popup-img">`
+        : ""}
+
+    </div>
+
+  </div>
+`);
     });
 
   } catch (err) {
