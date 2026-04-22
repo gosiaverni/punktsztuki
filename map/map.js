@@ -1,4 +1,4 @@
-const GEOCODE_URL = "https://xlcjmhhaxjnizmpoqkoa.supabase.co/functions/v1/geocode";
+
 
 document.addEventListener("DOMContentLoaded", () => {
 
