@@ -128,7 +128,22 @@ function initAmenities() {
     }
   });
 }
+function formatAddress(place) {
+  const addr = place.address || {};
 
+  const street = addr.road || addr.pedestrian || addr.footway || "";
+  const house = addr.house_number || "";
+  const postcode = addr.postcode || "";
+  const city = addr.city || addr.town || addr.village || addr.administrative || "";
+
+  // 🔥 jeśli jest ulica → pełny adres
+  if (street) {
+    return `${street} ${house}, ${postcode} ${city}`.trim();
+  }
+
+  // 🔥 jeśli brak ulicy → tylko miasto
+  return city;
+}
 
 // 🔍 AUTOCOMPLETE
 function initAutocomplete() {
