@@ -71,18 +71,18 @@ document.addEventListener("DOMContentLoaded", async () => {
 
       // 💾 SAVE
       const { error } = await supabaseClient.from("events").insert([{
-        title,
-        description,
-        start_date: startDate,
-        end_date: endDate,
-        location,
-        lat: geoData[0].lat,
-        lon: geoData[0].lon,
-        institution,
-        link,
-        images,
-        amenities
-      }]);
+  title,
+  description,
+  start_date: startDate,
+  end_date: endDate,
+  location,
+  lat: geoData[0].lat,
+  lon: geoData[0].lon,
+  institution,
+  link,
+  images,
+  amenities: amenities.length ? amenities : []
+}]);
 
       if (error) {
         console.error(error);
