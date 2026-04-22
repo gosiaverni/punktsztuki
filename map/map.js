@@ -76,10 +76,9 @@ document.addEventListener("DOMContentLoaded", () => {
     return `${day}.${month}.${year}`;
   }
 
-  function openEvent(id) {
-    window.location.href = `/event?id=${id}`;
-  }
-
+window.openEvent = function (id) {
+  window.location.href = `/event?id=${id}`;
+};
   // 🚀 START
   (async () => {
     try {
