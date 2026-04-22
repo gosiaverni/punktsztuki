@@ -1,4 +1,4 @@
-const GEOCODE_URL = "https://xlcjmhhaxjnizmpoqkoa.supabase.co/functions/v1/geocode";
+
 
 // jeśli używasz globalnego klienta:
 const supabaseClient = window.supabaseClient;
