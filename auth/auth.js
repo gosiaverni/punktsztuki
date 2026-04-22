@@ -55,3 +55,28 @@ document.getElementById("auth-form").onsubmit = async (e) => {
     alert("Konto utworzone! Sprawdź swojego maila.");
   }
 };
+
+const forgotBtn = document.getElementById("forgot-password");
+
+if (forgotBtn) {
+  forgotBtn.onclick = async () => {
+    const email = document.getElementById("email").value;
+
+    if (!email) {
+      alert("Podaj email, aby zresetować hasło.");
+      return;
+    }
+
+    const { error } = await supabaseClient.auth.resetPasswordForEmail(email, {
+      redirectTo: window.location.origin + "/reset-password"
+    });
+
+    if (error) {
+      console.error(error);
+      alert("Nie udało się wysłać maila.");
+      return;
+    }
+
+    alert("Sprawdź swojego maila.");
+  };
+}
