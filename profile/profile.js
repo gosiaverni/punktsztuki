@@ -168,30 +168,21 @@ async function loadSavedEvents() {
 
   if (!user) return;
 
- const { data: saved, error: savedError } = await supabaseClient
-  .from("saved_events")
-  .select("event_id")
-  .eq("user_id", user.id);
+  const { data, error } = await supabaseClient
+    .from("saved_events")
+    .select(`
+      event_id,
+      events (*)
+    `)
+    .eq("user_id", user.id);
 
-if (savedError) {
-  console.error("Błąd saved_events:", savedError);
-  container.innerHTML = "<p>Błąd ładowania zapisanych wydarzeń</p>";
-  return;
-}
-
-  if (!saved || saved.length === 0) {
-    container.innerHTML = "<p>Brak zapisanych wydarzeń</p>";
+  if (error) {
+    console.error(error);
+    container.innerHTML = "<p>Błąd ładowania</p>";
     return;
   }
 
-  const ids = saved.map(s => s.event_id);
-
-  // 🔥 pobierz wydarzenia
-  const { data: events } = await supabaseClient
-    .from("events")
-    .select("*")
-    .in("id", ids)
-    .order("created_at", { ascending: false });
+  const events = data.map(item => item.events);
 
   renderSavedEvents(events);
 }
