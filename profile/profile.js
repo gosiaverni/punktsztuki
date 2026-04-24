@@ -168,11 +168,16 @@ async function loadSavedEvents() {
 
   if (!user) return;
 
-  // 🔥 pobierz zapisane
-  const { data: saved } = await supabaseClient
-    .from("saved_events")
-    .select("event_id")
-    .eq("user_id", user.id);
+ const { data: saved, error: savedError } = await supabaseClient
+  .from("saved_events")
+  .select("event_id")
+  .eq("user_id", user.id);
+
+if (savedError) {
+  console.error("Błąd saved_events:", savedError);
+  container.innerHTML = "<p>Błąd ładowania zapisanych wydarzeń</p>";
+  return;
+}
 
   if (!saved || saved.length === 0) {
     container.innerHTML = "<p>Brak zapisanych wydarzeń</p>";
