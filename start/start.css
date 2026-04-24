@@ -1239,3 +1239,8 @@ filter: brightness(0.85); /* delikatnie przygasza */
   border-radius: 50%;
   animation: spin 0.8s linear infinite;
 }
+
+.event-card {
+  background: white !important;
+  color: black !important;
+}
