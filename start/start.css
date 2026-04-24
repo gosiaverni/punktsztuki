@@ -1252,3 +1252,7 @@ filter: brightness(0.85); /* delikatnie przygasza */
 .profile-container .event-card img {
   background: #f6f2ed;
 }
+
+.profile-container .events-grid {
+  opacity: 1 !important;
+}
