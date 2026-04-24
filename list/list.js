@@ -1,6 +1,22 @@
 const container = document.getElementById("events-container");
 const select = document.getElementById("city-select");
 const title = document.getElementById("city-title");
+const loader = document.getElementById("list-loader");
+const list = document.querySelector(".events-grid");
+
+function hideLoader() {
+  if (!loader) return;
+
+  loader.style.opacity = "0";
+
+  setTimeout(() => {
+    loader.style.display = "none";
+  }, 300);
+}
+
+function showList() {
+  if (list) list.classList.add("visible");
+}
 
 let allEvents = [];
 
@@ -13,20 +29,20 @@ async function loadEvents() {
 }
 
 function renderEvents(events, city) {
-  container.innerHTML = "<p>Ładowanie...</p>";
-
   const filtered = events.filter(e =>
     !city || e.location?.toLowerCase().includes(city.toLowerCase())
   );
 
-  if (filtered.length === 0) {
+  if (!filtered.length) {
     container.innerHTML = "<p>Brak wydarzeń dla wybranego miasta</p>";
     return;
   }
 
   container.innerHTML = "";
 
-  title.textContent = city ? `${city}` : "wydarzenia";
+  if (title) {
+    title.textContent = city ? city : "wydarzenia";
+  }
 
   filtered.forEach(event => {
     const card = document.createElement("div");
@@ -61,13 +77,23 @@ function renderEvents(events, city) {
   });
 }
 
-// 🔥 start
-loadEvents().then(events => {
-  allEvents = events;
-  renderEvents(allEvents, "");
-});
+// 🚀 START (POPRAWIONE)
+(async () => {
+  try {
+    const events = await loadEvents();
+    allEvents = events;
+    renderEvents(allEvents, "");
+  } catch (err) {
+    console.error(err);
+  } finally {
+    hideLoader();
+    showList();
+  }
+})();
 
-// 🔥 select
-select.addEventListener("change", () => {
-  renderEvents(allEvents, select.value);
-});
+// 🔥 SELECT
+if (select) {
+  select.addEventListener("change", () => {
+    renderEvents(allEvents, select.value);
+  });
+}
