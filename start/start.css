@@ -1240,7 +1240,15 @@ filter: brightness(0.85); /* delikatnie przygasza */
   animation: spin 0.8s linear infinite;
 }
 
-.event-card {
-  background: white !important;
-  color: black !important;
+.profile-container .event-card {
+  background: rgba(255,255,255,0.1);
+  color: #f6f2ed;
+}
+
+.profile-container .event-card-text p {
+  opacity: 0.9;
+}
+
+.profile-container .event-card img {
+  background: #f6f2ed;
 }
