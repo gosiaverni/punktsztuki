@@ -1272,3 +1272,9 @@ filter: brightness(0.85); /* delikatnie przygasza */
 .profile-container .saved-title {
   margin-bottom: 30px;
 }
+
+.saved-section {
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+}

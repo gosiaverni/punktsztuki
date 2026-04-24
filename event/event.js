@@ -282,3 +282,42 @@ function updateRatingUI(reviews) {
 
   el.textContent = "ocena " + avg.toFixed(1);
 }
+
+// =======================
+// 🔥 NAVBAR AUTH
+// =======================
+async function renderNavbar() {
+  const { data } = await supabaseClient.auth.getSession();
+  const user = data.session?.user;
+
+  const container = document.getElementById("auth-section");
+  if (!container) return;
+
+  if (user) {
+    container.innerHTML = `
+      <div class="dropdown">
+        <button class="nav-btn">TWOJE KONTO</button>
+        <div class="dropdown-content">
+          <div onclick="location.href='/profile'">Profil</div>
+          <div>Ustawienia</div>
+          <div id="logout-btn">Wyloguj się</div>
+        </div>
+      </div>
+    `;
+
+    document.getElementById("logout-btn").onclick = async () => {
+      await supabaseClient.auth.signOut();
+      window.location.href = "/";
+    };
+
+  } else {
+    container.innerHTML = `
+      <button class="nav-btn" onclick="location.href='/auth'">
+        ZALOGUJ SIĘ
+      </button>
+    `;
+  }
+}
+
+// 🔥 INIT
+renderNavbar();
