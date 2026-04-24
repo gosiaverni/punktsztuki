@@ -1247,7 +1247,7 @@ filter: brightness(0.85); /* delikatnie przygasza */
   border-radius: 20px;
   padding: 20px;
 
-  box-shadow: 0 8px 20px rgba(0,0,0,0.25);
+  box-shadow: 0 8px 20px rgba(0,0,0,0.15);
 
   transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
@@ -1261,4 +1261,14 @@ filter: brightness(0.85); /* delikatnie przygasza */
 
 .profile-container .events-grid {
   opacity: 1 !important;
+}
+
+.profile-container .saved-title {
+  font-size: 32px;
+  font-weight: 600;
+  margin-bottom: 20px;
+}
+
+.profile-container .saved-title {
+  margin-bottom: 30px;
 }
