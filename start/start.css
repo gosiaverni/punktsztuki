@@ -1241,10 +1241,16 @@ filter: brightness(0.85); /* delikatnie przygasza */
 }
 
 .profile-container .event-card {
-  background: rgba(255,255,255,0.1);
+  background: rgba(0,0,0,0.25); /* 🔥 ciemniejszy niż tło */
   color: #f6f2ed;
-}
 
+  border-radius: 20px;
+  padding: 20px;
+
+  box-shadow: 0 8px 20px rgba(0,0,0,0.25);
+
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
 .profile-container .event-card-text p {
   opacity: 0.9;
 }
