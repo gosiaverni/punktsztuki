@@ -30,9 +30,7 @@
       </div>
     </div>
 
-    <button class="nav-btn" onclick="location.href='/auth'">
-      ZALOGUJ SIĘ
-    </button>
+    <div id="auth-section"></div>
   </nav>
 </header>
 
@@ -44,15 +42,15 @@
 
     <form id="auth-form">
 
-      <div class="form-row">
-        <label>adres e-mail</label>
-        <input type="email" id="email" class="input">
-      </div>
+     <div class="auth-field">
+  <label>adres e-mail</label>
+  <input type="email" id="email" class="input">
+</div>
 
-      <div class="form-row">
-        <label>hasło</label>
-        <input type="password" id="password" class="input">
-      </div>
+      <div class="auth-field">
+  <label>hasło</label>
+  <input type="password" id="password" class="input">
+</div>
 
       <button type="submit" class="submit-btn" id="auth-btn">
         zaloguj się
@@ -72,6 +70,7 @@
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="/supabase.js"></script>
+<script src="/start/start.js"></script>
 <script src="/auth/auth.js"></script>
 
 </body>

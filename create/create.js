@@ -124,6 +124,7 @@ function initAmenities() {
 
     if (selected.length === 0) {
       select.textContent = "Wybierz udogodnienia";
+      
     } else {
       select.textContent = selected.join(", ");
     }
