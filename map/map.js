@@ -76,22 +76,20 @@ document.addEventListener("DOMContentLoaded", () => {
       // 2️⃣ Reviews tylko dla tych eventów
       const eventIds = events.map(e => e.id);
 
-      const { data: reviews, error: e2 } = await supabaseClient
-        .from("reviews")
-        .select("event_id, rating")
-        .in("event_id", eventIds);
+     const { data: ratings, error: e2 } = await supabaseClient
+  .from("reviews_avg")
+  .select("*")
+  .in("event_id", eventIds);
 
       if (e2) {
         console.error("Reviews error:", e2);
       }
 
-      // 3️⃣ Mapowanie (wydajność 🚀)
-      const reviewsByEvent = {};
+     const ratingsByEvent = {};
 
-      (reviews || []).forEach(r => {
-        (reviewsByEvent[r.event_id] ||= []).push(r);
-      });
-
+(ratings || []).forEach(r => {
+  ratingsByEvent[r.event_id] = r;
+});
       return {
         events,
         reviewsByEvent
@@ -130,14 +128,10 @@ document.addEventListener("DOMContentLoaded", () => {
           { icon: customIcon }
         ).addTo(map);
 
-        const eventReviews = reviewsByEvent[event.id] || [];
+      const rating = ratingsByEvent[event.id];
 
-        let ratingHTML = "";
-
-        if (eventReviews.length > 0) {
-          const avg =
-            eventReviews.reduce((sum, r) => sum + r.rating, 0) /
-            eventReviews.length;
+if (rating) {
+  const avg = rating.avg_rating;
 
           ratingHTML = `
             <div class="popup-rating">
