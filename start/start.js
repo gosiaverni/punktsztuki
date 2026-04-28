@@ -26,7 +26,7 @@ document.addEventListener("DOMContentLoaded", () => {
         return;
       }
 
-      fetch(`${GEOCODE_URL}?q=${encodeURIComponent(query)}`)
+      fetch(`${window.GEOCODE_URL}?q=${encodeURIComponent(query)}`)
         .then(res => res.json())
         .then(data => {
           if (!Array.isArray(data)) return;
@@ -150,4 +150,3 @@ document.addEventListener("DOMContentLoaded", () => {
 
 });
 
-window.requireAuth = requireAuth;

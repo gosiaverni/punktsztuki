@@ -1,5 +1,3 @@
-
-
 document.addEventListener("DOMContentLoaded", () => {
 
   const loader = document.getElementById("map-loader");
@@ -17,7 +15,9 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   // 📍 MAPA
-  const map = L.map('map').setView([52.2297, 21.0122], 6);
+  if (!mapEl) return;
+
+  const map = L.map(mapEl).setView([52.2297, 21.0122], 6);
 
   L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
     attribution: '&copy; OpenStreetMap & CartoDB'
@@ -29,13 +29,13 @@ document.addEventListener("DOMContentLoaded", () => {
 
   async function geocodeAddress(address) {
     try {
-      const res = await fetch(`${GEOCODE_URL}?q=${encodeURIComponent(address)}`);
+      const res = await fetch(`${window.GEOCODE_URL}?q=${encodeURIComponent(address)}`);
       if (!res.ok) return;
 
       const data = await res.json();
       if (!Array.isArray(data) || !data.length) return;
 
-      map.setView([data[0].lat, data[0].lon], 14);
+      map.setView([Number(data[0].lat), Number(data[0].lon)], 14);
 
     } catch (err) {
       console.error("Geocode error:", err);
@@ -53,20 +53,53 @@ document.addEventListener("DOMContentLoaded", () => {
   // 📦 LOAD DATA
   async function loadEvents() {
     try {
-      const { data: events, error: e1 } = await supabaseClient.from("events").select("*");
-      const { data: reviews, error: e2 } = await supabaseClient.from("reviews").select("*");
+      if (!window.supabaseClient) {
+        console.error("Supabase not initialized");
+        return { events: [], reviewsByEvent: {} };
+      }
 
-      if (e1) console.error(e1);
-      if (e2) console.error(e2);
+      // 1️⃣ Events
+      const { data: events, error: e1 } = await supabaseClient
+        .from("events")
+        .select("id, title, lat, lon, institution, end_date, images")
+        .limit(100);
+
+      if (e1) {
+        console.error("Events error:", e1);
+        return { events: [], reviewsByEvent: {} };
+      }
+
+      if (!events || events.length === 0) {
+        return { events: [], reviewsByEvent: {} };
+      }
+
+      // 2️⃣ Reviews tylko dla tych eventów
+      const eventIds = events.map(e => e.id);
+
+      const { data: reviews, error: e2 } = await supabaseClient
+        .from("reviews")
+        .select("event_id, rating")
+        .in("event_id", eventIds);
+
+      if (e2) {
+        console.error("Reviews error:", e2);
+      }
+
+      // 3️⃣ Mapowanie (wydajność 🚀)
+      const reviewsByEvent = {};
+
+      (reviews || []).forEach(r => {
+        (reviewsByEvent[r.event_id] ||= []).push(r);
+      });
 
       return {
-        events: events || [],
-        reviews: reviews || []
+        events,
+        reviewsByEvent
       };
 
     } catch (err) {
       console.error("Supabase error:", err);
-      return { events: [], reviews: [] };
+      return { events: [], reviewsByEvent: {} };
     }
   }
 
@@ -76,9 +109,10 @@ document.addEventListener("DOMContentLoaded", () => {
     return `${day}.${month}.${year}`;
   }
 
-window.openEvent = function (id) {
-  window.location.href = `/event?id=${id}`;
-};
+  window.openEvent = function (id) {
+    window.location.href = `/event?id=${id}`;
+  };
+
   // 🚀 START
   (async () => {
     try {
@@ -86,16 +120,17 @@ window.openEvent = function (id) {
         await geocodeAddress(address);
       }
 
-      const { events, reviews } = await loadEvents();
+      const { events, reviewsByEvent } = await loadEvents();
 
       events.forEach(event => {
-        if (!event.lat || !event.lon) return;
+        if (event.lat == null || event.lon == null) return;
 
-        const marker = L.marker([event.lat, event.lon], {
-          icon: customIcon
-        }).addTo(map);
+        const marker = L.marker(
+          [Number(event.lat), Number(event.lon)],
+          { icon: customIcon }
+        ).addTo(map);
 
-        const eventReviews = reviews.filter(r => r.event_id == event.id);
+        const eventReviews = reviewsByEvent[event.id] || [];
 
         let ratingHTML = "";
 
@@ -113,7 +148,7 @@ window.openEvent = function (id) {
         }
 
         marker.bindPopup(`
-          <div class="popup-card" onclick="openEvent('${event.id}')">
+          <div class="popup-card" onclick="openEvent(${JSON.stringify(event.id)})">
 
             <h3 class="popup-title">${event.title}</h3>
 
@@ -127,7 +162,7 @@ window.openEvent = function (id) {
                 </p>
               </div>
 
-              ${event.images?.length 
+              ${event.images?.length
                 ? `<img src="${event.images[0]}" class="popup-img">`
                 : ""}
 
@@ -140,7 +175,6 @@ window.openEvent = function (id) {
     } catch (err) {
       console.error("Map init error:", err);
     } finally {
-      // 🔥 ZAWSZE chowamy loader
       hideLoader();
     }
   })();

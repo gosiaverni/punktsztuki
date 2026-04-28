@@ -3,6 +3,39 @@
 // jeśli używasz globalnego klienta:
 const supabaseClient = window.supabaseClient;
 
+async function uploadImages(files) {
+  const urls = [];
+
+  for (const file of files) {
+
+    if (file.size > 2 * 1024 * 1024) {
+      alert("Plik za duży (max 2MB)");
+      continue;
+    }
+
+    const fileName = `${crypto.randomUUID()}-${file.name}`;
+
+    const { error } = await supabaseClient
+      .storage
+      .from("event-images")
+      .upload(fileName, file);
+
+    if (error) {
+      console.error("Upload error:", error);
+      continue;
+    }
+
+    const { data } = supabaseClient
+      .storage
+      .from("event-images")
+      .getPublicUrl(fileName);
+
+    urls.push(data.publicUrl);
+  }
+
+  return urls;
+}
+
 document.addEventListener("DOMContentLoaded", async () => {
   const form = document.querySelector(".event-form");
   if (!form) return;
@@ -40,23 +73,12 @@ document.addEventListener("DOMContentLoaded", async () => {
 
       let images = [];
 
-      if (imageInput?.files?.length > 0) {
-        const imagePromises = Array.from(imageInput.files).map(file => {
-          return new Promise((resolve, reject) => {
-            const reader = new FileReader();
-            reader.onload = e => resolve(e.target.result);
-            reader.onerror = reject;
-            reader.readAsDataURL(file);
-          });
-        });
-
-        images = await Promise.all(imagePromises);
-      }
+if (imageInput?.files?.length > 0) {
+  images = await uploadImages(imageInput.files);
+}
 
       // 🌍 GEOCODE
-      const res = await fetch(
-        `${GEOCODE_URL}?q=${encodeURIComponent(location)}`
-      );
+      const res = await fetch(`${window.GEOCODE_URL}?q=${encodeURIComponent(location)}`);
 
       if (!res.ok) {
         throw new Error("Geocode API error");
@@ -184,9 +206,7 @@ function initAutocomplete() {
     }
 
     try {
-      const res = await fetch(
-        `${GEOCODE_URL}?q=${encodeURIComponent(query)}`
-      );
+      const res = await fetch(`${window.GEOCODE_URL}?q=${encodeURIComponent(location)}`);
 
       if (!res.ok) {
         throw new Error("Autocomplete API error");

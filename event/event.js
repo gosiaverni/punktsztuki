@@ -2,12 +2,14 @@
 // 🔗 PARAMS
 // =======================
 const params = new URLSearchParams(window.location.search);
-const eventId = params.get("id");
+const eventIdRaw = params.get("id");
 
-if (!eventId) {
+if (!eventIdRaw) {
   document.body.innerHTML = "<h2>Brak ID wydarzenia</h2>";
   throw new Error("Missing event ID");
 }
+
+const eventId = Number(eventIdRaw);
 
 // =======================
 // 🌍 GLOBAL STATE
@@ -17,7 +19,6 @@ let isSaved = false;
 
 const stars = document.querySelectorAll("#stars img");
 const modal = document.getElementById("review-modal");
-const reviewsModal = document.getElementById("reviews-modal");
 const bookmarkBtn = document.getElementById("bookmark-btn");
 
 // =======================
@@ -51,11 +52,17 @@ function formatDate(d) {
 // =======================
 async function loadEvent() {
   try {
-    const { data } = await supabaseClient
+    const { data, error } = await supabaseClient
       .from("events")
-      .select("*")
+      .select("id, title, description, institution, location, start_date, end_date, images, link, amenities")
       .eq("id", eventId)
       .single();
+
+    if (error) {
+      console.error(error);
+      document.body.innerHTML = "<h2>Błąd ładowania wydarzenia</h2>";
+      return;
+    }
 
     if (!data) {
       document.body.innerHTML = "<h2>Nie znaleziono wydarzenia</h2>";
@@ -69,7 +76,12 @@ async function loadEvent() {
     if (titleEl) titleEl.textContent = event.title;
 
     const descEl = document.getElementById("event-description");
-    if (descEl) descEl.innerHTML = `<p>${event.description}</p>`;
+    if (descEl) {
+      const p = document.createElement("p");
+      p.textContent = event.description || "";
+      descEl.innerHTML = "";
+      descEl.appendChild(p);
+    }
 
     const locEl = document.getElementById("event-location");
     if (locEl) locEl.textContent = event.institution || "";
@@ -137,16 +149,18 @@ loadEvent();
 // =======================
 async function checkIfSaved() {
   const { data: userData } = await supabaseClient.auth.getUser();
-  const user = userData.user;
+  const user = userData?.user;
 
   if (!user) return;
 
-  const { data } = await supabaseClient
+  const { data, error } = await supabaseClient
     .from("saved_events")
-    .select("*")
+    .select("id")
     .eq("user_id", user.id)
     .eq("event_id", eventId)
     .maybeSingle();
+
+  if (error) console.error(error);
 
   isSaved = !!data;
   updateBookmarkUI();
@@ -163,7 +177,7 @@ function updateBookmarkUI() {
 if (bookmarkBtn) {
   bookmarkBtn.onclick = async () => {
     const { data: userData } = await supabaseClient.auth.getUser();
-    const user = userData.user;
+    const user = userData?.user;
 
     if (!user) {
       localStorage.setItem("redirectAfterLogin", window.location.href);
@@ -246,9 +260,28 @@ if (submitBtn) {
       return;
     }
 
-    await supabaseClient
+    const { data: userData } = await supabaseClient.auth.getUser();
+    const user = userData?.user;
+
+    if (!user) {
+      window.location.href = "/auth";
+      return;
+    }
+
+    const { error } = await supabaseClient
       .from("reviews")
-      .insert([{ event_id: eventId, rating: selectedRating, text }]);
+      .insert([{
+        event_id: eventId,
+        rating: selectedRating,
+        text,
+        user_id: user.id
+      }]);
+
+    if (error) {
+      console.error(error);
+      alert("Nie udało się dodać opinii");
+      return;
+    }
 
     modal.classList.remove("active");
     loadReviews();
@@ -259,10 +292,15 @@ if (submitBtn) {
 // 📊 REVIEWS
 // =======================
 async function loadReviews() {
-  const { data: reviews } = await supabaseClient
+  const { data: reviews, error } = await supabaseClient
     .from("reviews")
-    .select("*")
+    .select("rating")
     .eq("event_id", eventId);
+
+  if (error) {
+    console.error(error);
+    return;
+  }
 
   updateRatingUI(reviews);
 }
