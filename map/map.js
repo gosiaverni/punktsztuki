@@ -55,10 +55,10 @@ document.addEventListener("DOMContentLoaded", () => {
     try {
       if (!window.supabaseClient) {
         console.error("Supabase not initialized");
-        return { events: [], reviewsByEvent: {} };
+        return { events: [], ratingsByEvent: {} };
       }
 
-      // 1️⃣ Events
+      // 1️⃣ EVENTS
       const { data: events, error: e1 } = await supabaseClient
         .from("events")
         .select("id, title, lat, lon, institution, end_date, images")
@@ -66,38 +66,40 @@ document.addEventListener("DOMContentLoaded", () => {
 
       if (e1) {
         console.error("Events error:", e1);
-        return { events: [], reviewsByEvent: {} };
+        return { events: [], ratingsByEvent: {} };
       }
 
       if (!events || events.length === 0) {
-        return { events: [], reviewsByEvent: {} };
+        return { events: [], ratingsByEvent: {} };
       }
 
-      // 2️⃣ Reviews tylko dla tych eventów
+      // 2️⃣ RATINGS (VIEW)
       const eventIds = events.map(e => e.id);
 
-     const { data: ratings, error: e2 } = await supabaseClient
-  .from("reviews_avg")
-  .select("*")
-  .in("event_id", eventIds);
+      const { data: ratings, error: e2 } = await supabaseClient
+        .from("reviews_avg")
+        .select("*")
+        .in("event_id", eventIds);
 
       if (e2) {
-        console.error("Reviews error:", e2);
+        console.error("Ratings error:", e2);
       }
 
-     const ratingsByEvent = {};
+      // 3️⃣ MAPA ratingów
+      const ratingsByEvent = {};
 
-(ratings || []).forEach(r => {
-  ratingsByEvent[r.event_id] = r;
-});
+      (ratings || []).forEach(r => {
+        ratingsByEvent[r.event_id] = r;
+      });
+
       return {
         events,
-        reviewsByEvent
+        ratingsByEvent
       };
 
     } catch (err) {
       console.error("Supabase error:", err);
-      return { events: [], reviewsByEvent: {} };
+      return { events: [], ratingsByEvent: {} };
     }
   }
 
@@ -118,7 +120,7 @@ document.addEventListener("DOMContentLoaded", () => {
         await geocodeAddress(address);
       }
 
-      const { events, reviewsByEvent } = await loadEvents();
+      const { events, ratingsByEvent } = await loadEvents();
 
       events.forEach(event => {
         if (event.lat == null || event.lon == null) return;
@@ -128,57 +130,63 @@ document.addEventListener("DOMContentLoaded", () => {
           { icon: customIcon }
         ).addTo(map);
 
-      const rating = ratingsByEvent[event.id];
+        // ⭐ RATING
+        let ratingHTML = "";
 
-if (rating) {
-  const avg = rating.avg_rating;
+        const rating = ratingsByEvent[event.id];
+
+        if (rating) {
+          const avg = rating.avg_rating;
 
           ratingHTML = `
             <div class="popup-rating">
               <img src="/assets/star.png" class="popup-star">
-              <span>${avg.toFixed(1)}</span>
+              <span>${Number(avg || 0).toFixed(1)}</span>
             </div>
           `;
         }
 
+        // 📦 POPUP
         marker.bindPopup(`
-  <div class="popup-card" data-id="${event.id}">
+          <div class="popup-card" data-id="${event.id}">
 
-    <h3 class="popup-title">${event.title}</h3>
+            <h3 class="popup-title">${event.title}</h3>
 
-    <div class="popup-content">
+            <div class="popup-content">
 
-      <div class="popup-text">
-        ${ratingHTML}
-        <p class="popup-place">${event.institution || ""}</p>
-        <p class="popup-date">
-          do ${formatDate(event.end_date)}
-        </p>
-      </div>
+              <div class="popup-text">
+                ${ratingHTML}
+                <p class="popup-place">${event.institution || ""}</p>
+                <p class="popup-date">
+                  do ${formatDate(event.end_date)}
+                </p>
+              </div>
 
-      ${event.images?.length
-        ? `<img src="${event.images[0]}" class="popup-img">`
-        : ""}
+              ${event.images?.length
+                ? `<img src="${event.images[0]}" class="popup-img">`
+                : ""}
 
-    </div>
+            </div>
 
-  </div>
-`);
+          </div>
+        `);
 
-marker.on("popupopen", (e) => {
-  const popupEl = e.popup.getElement();
-  if (!popupEl) return;
+        // 🔥 KLIK POPUPA
+        marker.on("popupopen", (e) => {
+          const popupEl = e.popup.getElement();
+          if (!popupEl) return;
 
-  const card = popupEl.querySelector(".popup-card");
-  if (!card) return;
+          const card = popupEl.querySelector(".popup-card");
+          if (!card) return;
 
-  card.style.cursor = "pointer";
+          card.style.cursor = "pointer";
 
-  card.addEventListener("click", () => {
-    const id = card.getAttribute("data-id");
-    window.openEvent(id);
-  });
-});
+          card.addEventListener("click", () => {
+            const id = card.getAttribute("data-id");
+            window.openEvent(id);
+          });
+        });
+
       });
 
     } catch (err) {
