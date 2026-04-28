@@ -8,8 +8,7 @@ if (!eventIdRaw) {
   document.body.innerHTML = "<h2>Brak ID wydarzenia</h2>";
   throw new Error("Missing event ID");
 }
-
-const eventId = Number(eventIdRaw);
+const eventId = eventIdRaw;
 
 // =======================
 // 🌍 GLOBAL STATE
