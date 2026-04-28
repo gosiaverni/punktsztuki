@@ -148,28 +148,43 @@ document.addEventListener("DOMContentLoaded", () => {
         }
 
         marker.bindPopup(`
-          <div class="popup-card" onclick="openEvent(${JSON.stringify(event.id)})">
+  <div class="popup-card" data-id="${event.id}">
 
-            <h3 class="popup-title">${event.title}</h3>
+    <h3 class="popup-title">${event.title}</h3>
 
-            <div class="popup-content">
+    <div class="popup-content">
 
-              <div class="popup-text">
-                ${ratingHTML}
-                <p class="popup-place">${event.institution || ""}</p>
-                <p class="popup-date">
-                  do ${formatDate(event.end_date)}
-                </p>
-              </div>
+      <div class="popup-text">
+        ${ratingHTML}
+        <p class="popup-place">${event.institution || ""}</p>
+        <p class="popup-date">
+          do ${formatDate(event.end_date)}
+        </p>
+      </div>
 
-              ${event.images?.length
-                ? `<img src="${event.images[0]}" class="popup-img">`
-                : ""}
+      ${event.images?.length
+        ? `<img src="${event.images[0]}" class="popup-img">`
+        : ""}
 
-            </div>
+    </div>
 
-          </div>
-        `);
+  </div>
+`);
+
+marker.on("popupopen", (e) => {
+  const popupEl = e.popup.getElement();
+  if (!popupEl) return;
+
+  const card = popupEl.querySelector(".popup-card");
+  if (!card) return;
+
+  card.style.cursor = "pointer";
+
+  card.addEventListener("click", () => {
+    const id = card.getAttribute("data-id");
+    window.openEvent(id);
+  });
+});
       });
 
     } catch (err) {
