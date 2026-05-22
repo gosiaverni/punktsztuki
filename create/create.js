@@ -3,15 +3,79 @@
 // jeśli używasz globalnego klienta:
 const supabaseClient = window.supabaseClient;
 
+async function compressImage(file) {
+
+  return new Promise((resolve) => {
+
+    const img = new Image();
+    const reader = new FileReader();
+
+    reader.onload = (e) => {
+      img.src = e.target.result;
+    };
+
+    img.onload = () => {
+
+      const canvas = document.createElement("canvas");
+
+      const MAX_WIDTH = 1400;
+
+      let width = img.width;
+      let height = img.height;
+
+      // 🔥 zmniejszanie proporcjonalne
+      if (width > MAX_WIDTH) {
+        height *= MAX_WIDTH / width;
+        width = MAX_WIDTH;
+      }
+
+      canvas.width = width;
+      canvas.height = height;
+
+      const ctx = canvas.getContext("2d");
+
+      ctx.drawImage(img, 0, 0, width, height);
+
+      // 🔥 WEBP compression
+      canvas.toBlob(
+        (blob) => {
+
+          const compressedFile = new File(
+            [blob],
+            file.name.replace(/\.\w+$/, ".webp"),
+            {
+              type: "image/webp"
+            }
+          );
+
+          resolve(compressedFile);
+
+        },
+        "image/webp",
+        0.75 // 🔥 jakość
+      );
+    };
+
+    reader.readAsDataURL(file);
+  });
+}
+
 async function uploadImages(files) {
+
   const urls = [];
 
-  for (const file of files) {
+  for (const originalFile of files) {
 
-    if (file.size > 2 * 1024 * 1024) {
-      alert("Plik za duży (max 2MB)");
-      continue;
-    }
+    // 🔥 kompresja
+    const file = await compressImage(originalFile);
+
+    console.log(
+      "compressed:",
+      (originalFile.size / 1024 / 1024).toFixed(2),
+      "MB →",
+      (file.size / 1024 / 1024).toFixed(2),
+      "MB"
+    );
 
     const fileName = `${crypto.randomUUID()}-${file.name}`;
 
