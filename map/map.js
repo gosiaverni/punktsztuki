@@ -46,12 +46,18 @@ document.addEventListener("DOMContentLoaded", () => {
       }
 
       events.forEach(event => {
-        if (!event.lat || !event.lon) return;
 
-        const marker = L.marker(
-          [Number(event.lat), Number(event.lon)],
-          { icon: customIcon }
-        ).addTo(map);
+  if (event.lat == null || event.lon == null) return;
+
+  const lat = Number(event.lat);
+  const lon = Number(event.lon);
+
+  if (isNaN(lat) || isNaN(lon)) return;
+
+  const marker = L.marker(
+    [lat, lon],
+    { icon: customIcon }
+  ).addTo(map);
 
         marker.bindPopup(`
           <div class="popup-card" onclick="openEvent('${event.id}')">
