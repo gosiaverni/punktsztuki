@@ -53,7 +53,7 @@ async function loadEvent() {
   try {
     const { data, error } = await supabaseClient
       .from("events")
-      .select("id, title, description, institution, location, start_date, end_date, images, link, amenities")
+      .select("id, title, description, institution, location, start_date, end_date, images, link, amenities, user_id")
       .eq("id", eventId)
       .single();
 
@@ -69,6 +69,65 @@ async function loadEvent() {
     }
 
     const event = data;
+
+    const { data: sessionData } =
+  await supabaseClient.auth.getSession();
+
+const currentUserId =
+  sessionData.session?.user?.id;
+
+const isOwner =
+  currentUserId === event.user_id;
+
+const controls =
+  document.getElementById("event-owner-controls");
+
+  if (isOwner && controls) {
+
+  controls.innerHTML = `
+    <div class="owner-buttons">
+
+      <button
+        id="edit-event-btn"
+        class="submit-btn"
+      >
+        Edytuj wydarzenie
+      </button>
+
+      <button
+        id="delete-event-btn"
+        class="submit-btn delete-btn"
+      >
+        Usuń wydarzenie
+      </button>
+
+    </div>
+  `;
+}
+
+document
+  .getElementById("delete-event-btn")
+  ?.addEventListener("click", async () => {
+
+    const confirmed = confirm(
+      "Na pewno usunąć wydarzenie?"
+    );
+
+    if (!confirmed) return;
+
+    const { error } = await supabaseClient
+      .from("events")
+      .delete()
+      .eq("id", event.id);
+
+    if (error) {
+      console.error(error);
+      alert("Nie udało się usunąć.");
+      return;
+    }
+
+    window.location.href = "/map";
+});
 
     // 🧠 SAFE SETTERS
     const titleEl = document.querySelector("h1");

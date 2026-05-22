@@ -171,7 +171,9 @@ if (imageInput?.files?.length > 0) {
   images,
   cover_image: images?.[0] || null,
 
-  amenities: amenities.length ? amenities : []
+  amenities: amenities.length ? amenities : [],
+
+  user_id: user?.id
 }]);
       if (error) {
         console.error(error);
