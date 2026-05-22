@@ -3,3 +3,4 @@ const supabaseKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZS
 
 window.supabaseClient = window.supabase.createClient(supabaseUrl, supabaseKey);
 
+window.supabaseKey = supabaseKey;
