@@ -4,16 +4,17 @@ const title = document.getElementById("city-title");
 const loader = document.getElementById("list-loader");
 const list = document.querySelector(".events-grid");
 
+
+
 function hideLoader() {
   if (!loader) return;
 
-  loader.style.opacity = "0";
+  loader.classList.add("hidden");
 
   setTimeout(() => {
     loader.style.display = "none";
   }, 300);
 }
-
 function showList() {
   if (list) list.classList.add("visible");
 }
@@ -21,9 +22,16 @@ function showList() {
 let allEvents = [];
 
 async function loadEvents() {
-  const { data: events } = await supabaseClient
+
+  const { data: events, error } = await supabaseClient
     .from("events")
-    .select("*");
+    .select("id, title, institution, end_date, location, cover_image")
+    .limit(50);
+
+  if (error) {
+    console.error("Events error:", error);
+    return [];
+  }
 
   return events || [];
 }
@@ -54,20 +62,21 @@ function renderEvents(events, city) {
       return `${day}.${month}.${year}`;
     };
 
-    card.innerHTML = `
-      <div class="event-card-text">
-        <h3>${event.title}</h3>
-        <p>${event.institution || ""}</p>
-        <div class="event-card-date">
-          do ${formatDate(event.end_date)}
-        </div>
-      </div>
+  card.innerHTML = `
+  <div class="event-card-text">
+    <h3>${event.title}</h3>
+    <p>${event.institution || ""}</p>
 
-      ${event.images?.length 
-        ? `<img src="${event.images[0]}">`
-        : ""
-      }
-    `;
+    <div class="event-card-date">
+      do ${formatDate(event.end_date)}
+    </div>
+  </div>
+
+  ${event.cover_image
+    ? `<img loading="lazy" src="${event.cover_image}">`
+    : ""
+  }
+`;
 
     card.addEventListener("click", () => {
       window.location.href = `/event?id=${event.id}`;
@@ -77,17 +86,19 @@ function renderEvents(events, city) {
   });
 }
 
-// 🚀 START (POPRAWIONE)
 (async () => {
   try {
     const events = await loadEvents();
+
     allEvents = events;
+
     renderEvents(allEvents, "");
+
+    showList();
+    hideLoader();
+
   } catch (err) {
     console.error(err);
-  } finally {
-    hideLoader();
-    showList();
   }
 })();
 

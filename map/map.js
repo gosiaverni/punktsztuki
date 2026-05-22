@@ -41,7 +41,7 @@ function hideLoader() {
     try {
       const { data: events, error } = await supabaseClient
         .from("events")
-        .select("id, title, lat, lon, institution, end_date")
+        .select("id, title, lat, lon, institution, end_date, cover_image")
         .order("end_date", { ascending: true })
         .limit(30); // 🔥 MAŁY LIMIT = brak timeoutów
 

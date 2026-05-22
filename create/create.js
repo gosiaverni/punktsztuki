@@ -102,10 +102,12 @@ if (imageInput?.files?.length > 0) {
   lon: geoData[0].lon,
   institution,
   link,
+
   images,
+  cover_image: images?.[0] || null,
+
   amenities: amenities.length ? amenities : []
 }]);
-
       if (error) {
         console.error(error);
         alert("Błąd zapisu.");

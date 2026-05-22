@@ -1293,3 +1293,8 @@ filter: brightness(0.85); /* delikatnie przygasza */
   position: relative;
   height: 100vh;
 }
+
+.list-wrapper {
+  position: relative;
+  min-height: 400px;
+}
