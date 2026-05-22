@@ -42,6 +42,7 @@ function hideLoader() {
       const { data: events, error } = await supabaseClient
         .from("events")
         .select("id, title, lat, lon, institution, end_date, cover_image")
+        .gte("end_date", new Date().toISOString().split("T")[0])
         .order("end_date", { ascending: true })
         .limit(30); // 🔥 MAŁY LIMIT = brak timeoutów
 
@@ -111,3 +112,4 @@ function hideLoader() {
   map.whenReady(loadEvents);
 
 });
+
