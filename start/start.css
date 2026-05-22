@@ -1213,7 +1213,10 @@ filter: brightness(0.85); /* delikatnie przygasza */
 .map-loader {
   position: absolute;
   inset: 0;
-  background: white;
+
+  background: none;
+  backdrop-filter: blur(3px);
+
   z-index: 10;
 
   display: flex;
@@ -1223,7 +1226,12 @@ filter: brightness(0.85); /* delikatnie przygasza */
 
   transition: opacity 0.3s ease;
 
-  pointer-events: none; /* 🔥 KLUCZ */
+  pointer-events: all;
+}
+
+.map-loader.hidden {
+  opacity: 0;
+  pointer-events: none;
 }
 
 /* 🔥 żeby nie blokował klików po zniknięciu */
