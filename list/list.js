@@ -26,6 +26,7 @@ async function loadEvents() {
   const { data: events, error } = await supabaseClient
     .from("events")
     .select("id, title, institution, end_date, location, cover_image")
+    .gte("end_date", new Date().toISOString().split("T")[0])
     .limit(50);
 
   if (error) {
