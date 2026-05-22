@@ -142,7 +142,9 @@ if (imageInput?.files?.length > 0) {
 }
 
       // 🌍 GEOCODE
-      const res = await fetch(`${window.GEOCODE_URL}?q=${encodeURIComponent(location)}`);
+     const res = await fetch(
+  `${window.GEOCODE_URL}?q=${encodeURIComponent(query)}`
+);
 
       if (!res.ok) {
         throw new Error("Geocode API error");

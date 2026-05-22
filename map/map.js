@@ -65,14 +65,42 @@ function hideLoader() {
   ).addTo(map);
 
         marker.bindPopup(`
-          <div class="popup-card" onclick="openEvent('${event.id}')">
-            <h3>${event.title}</h3>
-            <p>${event.institution || ""}</p>
-            <p>do ${formatDate(event.end_date)}</p>
-          </div>
-        `);
-      });
+  <div class="popup-card" onclick="openEvent('${event.id}')">
 
+    <div class="popup-title">
+      ${event.title}
+    </div>
+
+    <div class="popup-content">
+
+      <div class="popup-text">
+
+        <div class="popup-place">
+          ${event.institution || ""}
+        </div>
+
+        <div class="popup-date">
+          do ${formatDate(event.end_date)}
+        </div>
+
+      </div>
+
+      ${event.cover_image
+        ? `
+          <img
+            class="popup-img"
+            loading="lazy"
+            src="${event.cover_image}"
+          >
+        `
+        : ""
+      }
+
+    </div>
+
+  </div>
+`);
+});
     } catch (err) {
       console.error("Load error:", err);
     } finally {
