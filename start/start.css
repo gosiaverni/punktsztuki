@@ -1289,3 +1289,7 @@ filter: brightness(0.85); /* delikatnie przygasza */
   gap: 30px;
 }
 
+.map-container {
+  position: relative;
+  height: 100vh;
+}

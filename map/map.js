@@ -7,14 +7,19 @@ document.addEventListener("DOMContentLoaded", () => {
 
   const map = L.map(mapEl).setView([52.2297, 21.0122], 6);
 
-  L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
-    attribution: '&copy; OpenStreetMap & CartoDB'
-  }).addTo(map);
+L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
+  attribution: '&copy; OpenStreetMap & CartoDB'
+}).addTo(map);
 
-  function hideLoader() {
-    if (!loader) return;
-    loader.style.display = "none";
-  }
+
+
+function hideLoader() {
+  if (!loader) return;
+
+  loader.style.display = "none";
+
+  mapEl.classList.add("visible");
+}
 
   const customIcon = L.icon({
     iconUrl: '/assets/pin.png',
