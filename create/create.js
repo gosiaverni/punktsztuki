@@ -264,23 +264,27 @@ function initAutocomplete() {
 
   if (!input || !list) return;
 
-  input.addEventListener("input", async () => {
-    const query = input.value.trim();
+ input.addEventListener("input", async () => {
 
-    if (query.length < 3) {
-      list.innerHTML = "";
-      list.classList.remove("active");
-      return;
+  const query = input.value.trim();
+
+  if (query.length < 3) {
+    list.innerHTML = "";
+    list.classList.remove("active");
+    return;
+  }
+
+  try {
+
+    const res = await fetch(
+      `${window.GEOCODE_URL}?q=${encodeURIComponent(query)}`
+    );
+
+    if (!res.ok) {
+      throw new Error("Autocomplete API error");
     }
 
-    try {
-      const res = await fetch(`${window.GEOCODE_URL}?q=${encodeURIComponent(location)}`);
-
-      if (!res.ok) {
-        throw new Error("Autocomplete API error");
-      }
-
-      const data = await res.json();
+    const data = await res.json();
 
       if (!Array.isArray(data)) {
         console.error("Invalid data:", data);
