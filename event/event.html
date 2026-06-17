@@ -35,60 +35,72 @@
 
 <main class="event-page">
 
+  <div class="event-container">
+
     <!-- 🔥 TYTUŁ -->
     <div class="event-header">
-  <h1 id="event-title"></h1>
-
-  <div id="event-owner-controls"></div>
-</div>
-  
-<div class="event-content"></div>
-<!-- LEWA -->
-<div class="event-description">
-
-  <div class="rating-box">
-    <div class="rating-header">
-      <img src="../assets/star.png" class="star-icon">
-      <span id="event-rating">ocena 0.0</span>
+      <h1 id="event-title"></h1>
+      <div id="event-owner-controls"></div>
     </div>
 
-    
+    <div class="event-content">
 
-    <div class="rating-actions">
-      <span id="show-reviews">sprawdź recenzje</span>
-      <span id="add-review">dodaj recenzję</span>
+      <!-- LEWA -->
+      <div class="event-description">
+
+        <div class="rating-box">
+          <div class="rating-header">
+            <img src="../assets/star.png" class="star-icon">
+            <span id="event-rating">ocena 0.0</span>
+          </div>
+
+          <div class="rating-actions">
+            <span id="show-reviews">sprawdź recenzje</span>
+            <span id="add-review">dodaj recenzję</span>
+          </div>
+        </div>
+
+        <h3 class="section-title">opis wydarzenia</h3>
+        <div id="event-description"></div>
+
+        <h3 class="amenities-title">udogodnienia</h3>
+        <div id="event-amenities"></div>
+
+      </div>
+
+      <!-- PRAWA -->
+      <div class="event-side">
+
+        <h2 id="event-location"></h2>
+
+        <p class="event-address" id="event-address"></p>
+
+        <p class="event-date" id="event-date"></p>
+
+        <img src="" class="event-image" id="event-image">
+
+        <a
+          href="#"
+          target="_blank"
+          id="event-link"
+          class="event-link"
+        ></a>
+
+      </div>
+
     </div>
+
+    <!-- ZGŁOSZENIE WYDARZENIA -->
+    <div class="report-section">
+
+      <span id="report-event-btn" class="report-link">
+        Zgłoś wydarzenie
+      </span>
+
+    </div>
+
   </div>
 
-  <h3 class="section-title">opis wydarzenia</h3>
-  <div id="event-description"></div>
-
-  <h3 class="amenities-title">udogodnienia</h3>
-  <div id="event-amenities"></div>
-
-</div>
-
-  <!-- PRAWA -->
-  <div class="event-side">
-    <h2 id="event-location"></h2>
-    <p class="event-address" id="event-address"></p>
-
-    <p class="event-date" id="event-date"></p>
-
-    <img src="" class="event-image" id="event-image">
-
-    <a href="#" target="_blank" id="event-link" class="event-link"></a>
-  </div>
-
-</div>
-  </div>
-<div class="report-section">
-
-  <span id="report-event-btn" class="report-link">
-    Zgłoś wydarzenie
-  </span>
-
-</div>
 </main>
 <div class="review-modal" id="review-modal">
 
