@@ -19,7 +19,21 @@ let isSaved = false;
 const stars = document.querySelectorAll("#stars img");
 const modal = document.getElementById("review-modal");
 const bookmarkBtn = document.getElementById("bookmark-btn");
+const reportBtn =
+  document.getElementById("report-event-btn");
 
+const reportModal =
+  document.getElementById("report-modal");
+
+if (reportBtn && reportModal) {
+
+  reportBtn.addEventListener("click", () => {
+
+    reportModal.classList.add("active");
+
+  });
+
+}
 // =======================
 // 🧠 HELPERS
 // =======================
@@ -263,6 +277,112 @@ if (bookmarkBtn) {
   };
 }
 
+async function uploadReportFiles(files) {
+
+  const uploaded = [];
+
+  for (const file of files) {
+
+    const path =
+      `${Date.now()}-${file.name}`;
+
+    const { error } =
+      await supabaseClient.storage
+        .from("report-attachments")
+        .upload(path, file);
+
+    if (error) {
+      console.error(error);
+      continue;
+    }
+
+    uploaded.push(path);
+  }
+
+  return uploaded;
+}
+
+const submitReportBtn =
+  document.getElementById("submit-report-btn");
+
+if (submitReportBtn) {
+
+  submitReportBtn.addEventListener(
+    "click",
+    async () => {
+
+      const reason =
+        document.getElementById("report-reason").value;
+
+      const description =
+        document.getElementById("report-description").value;
+
+      const email =
+        document.getElementById("report-email").value;
+
+      const files =
+        document.getElementById("report-files").files;
+
+      if (!reason) {
+        alert("Wybierz powód");
+        return;
+      }
+
+      if (!description.trim()) {
+        alert("Opisz problem");
+        return;
+      }
+
+      let attachments = [];
+
+      if (files.length) {
+
+        attachments =
+          await uploadReportFiles(files);
+
+      }
+
+      const { data: userData } =
+        await supabaseClient.auth.getUser();
+
+      const user =
+        userData?.user;
+
+      const { error } =
+        await supabaseClient
+          .from("event_reports")
+          .insert([{
+            event_id: eventId,
+            user_id: user?.id ?? null,
+
+            reason,
+            description,
+            email,
+
+            attachments
+          }]);
+
+      if (error) {
+
+        console.error(error);
+
+        alert(
+          "Nie udało się wysłać zgłoszenia"
+        );
+
+        return;
+      }
+
+      alert(
+        "Dziękujemy. Zgłoszenie zostało wysłane."
+      );
+
+      reportModal.classList.remove("active");
+
+    }
+  );
+
+}
 // =======================
 // ⭐ GWIAZDKI
 // =======================

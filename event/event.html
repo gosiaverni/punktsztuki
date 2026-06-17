@@ -82,7 +82,13 @@
 
 </div>
   </div>
+<div class="report-section">
 
+  <span id="report-event-btn" class="report-link">
+    Zgłoś wydarzenie
+  </span>
+
+</div>
 </main>
 <div class="review-modal" id="review-modal">
 
@@ -119,6 +125,61 @@
     <h2>Recenzje</h2>
 
     <div id="reviews-list"></div>
+
+  </div>
+
+</div>
+<div id="report-modal" class="modal">
+
+  <div class="modal-content">
+
+    <h2>Zgłoś wydarzenie</h2>
+
+    <select id="report-reason">
+      <option value="">Wybierz powód</option>
+
+      <option value="copyright">
+        Naruszenie praw autorskich
+      </option>
+
+      <option value="inappropriate">
+        Nieodpowiednia treść
+      </option>
+
+      <option value="spam">
+        Spam / reklama
+      </option>
+
+      <option value="fake">
+        Fałszywe informacje
+      </option>
+
+      <option value="other">
+        Inny powód
+      </option>
+    </select>
+
+    <textarea
+      id="report-description"
+      placeholder="Opisz problem"
+    ></textarea>
+
+    <input
+      type="email"
+      id="report-email"
+      placeholder="Twój email (opcjonalnie)"
+    >
+
+    <input
+      type="file"
+      id="report-files"
+      multiple
+      accept=".jpg,.jpeg,.png,.pdf"
+    >
+
+    <button id="submit-report-btn">
+      Wyślij zgłoszenie
+    </button>
 
   </div>
 
