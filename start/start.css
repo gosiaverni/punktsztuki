@@ -1483,3 +1483,7 @@ filter: brightness(0.85); /* delikatnie przygasza */
 #submit-report-btn:hover {
   background: #000;
 }
+
+.modal-content {
+  position: relative;
+}

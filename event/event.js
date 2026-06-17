@@ -34,6 +34,32 @@ if (reportBtn && reportModal) {
   });
 
 }
+
+const closeReportModal =
+  document.getElementById("close-report-modal");
+
+if (closeReportModal && reportModal) {
+
+  closeReportModal.addEventListener(
+    "click",
+    () => {
+      reportModal.classList.remove("active");
+    }
+  );
+
+}
+
+if (reportModal) {
+
+  reportModal.addEventListener("click", (e) => {
+
+    if (e.target === reportModal) {
+      reportModal.classList.remove("active");
+    }
+
+  });
+
+}
 // =======================
 // 🧠 HELPERS
 // =======================
