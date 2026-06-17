@@ -1320,3 +1320,20 @@ filter: brightness(0.85); /* delikatnie przygasza */
 .delete-btn:hover {
   background: #000;
 }
+
+.report-section {
+  margin-top: 40px;
+  text-align: center;
+}
+
+.report-link {
+  display: inline-block;
+  cursor: pointer;
+  text-decoration: underline;
+  color: #f6f2ed;
+  font-size: 14px;
+}
+
+.report-link:hover {
+  opacity: 0.8;
+}
