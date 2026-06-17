@@ -548,6 +548,98 @@ function updateRatingUI(reviews) {
   el.textContent = "ocena " + avg.toFixed(1);
 }
 
+const showReviewsBtn =
+  document.getElementById("show-reviews");
+
+const reviewsModal =
+  document.getElementById("reviews-modal");
+
+const closeReviewsBtn =
+  document.getElementById("close-reviews");
+
+async function renderReviews() {
+
+  const { data: reviews, error } =
+    await supabaseClient
+      .from("reviews")
+      .select("*")
+      .eq("event_id", eventId)
+      .order("created_at", {
+        ascending: false
+      });
+
+  if (error) {
+    console.error(error);
+    return;
+  }
+
+  const container =
+    document.getElementById("reviews-list");
+
+  if (!container) return;
+
+  container.innerHTML = "";
+
+  if (!reviews?.length) {
+
+    container.innerHTML =
+      "<p>Brak recenzji.</p>";
+
+    return;
+  }
+
+  reviews.forEach(review => {
+
+    container.innerHTML += `
+
+      <div class="review-item">
+
+        <div class="review-rating">
+          ⭐ ${review.rating}/5
+        </div>
+
+        <div class="review-text">
+          ${review.text || ""}
+        </div>
+
+      </div>
+
+    `;
+
+  });
+
+}
+
+if (showReviewsBtn && reviewsModal) {
+
+  showReviewsBtn.addEventListener(
+    "click",
+    async () => {
+
+      await renderReviews();
+
+      reviewsModal.classList.add("active");
+
+    }
+  );
+
+}
+
+if (closeReviewsBtn && reviewsModal) {
+
+  closeReviewsBtn.addEventListener(
+    "click",
+    () => {
+
+      reviewsModal.classList.remove(
+        "active"
+      );
+
+    }
+  );
+
+}
+
 // =======================
 // 🔥 NAVBAR AUTH
 // =======================
