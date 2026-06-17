@@ -449,7 +449,30 @@ if (addReviewBtn && modal) {
     stars.forEach(s => s.src = "/assets/empty-star.png");
   };
 }
+const closeModal =
+  document.getElementById("close-modal");
 
+if (closeModal && modal) {
+
+  closeModal.addEventListener("click", () => {
+
+    modal.classList.remove("active");
+
+  });
+
+}
+
+if (modal) {
+
+  modal.addEventListener("click", (e) => {
+
+    if (e.target === modal) {
+      modal.classList.remove("active");
+    }
+
+  });
+
+}
 // =======================
 // 💾 SAVE REVIEW
 // =======================
