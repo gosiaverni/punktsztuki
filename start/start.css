@@ -1337,3 +1337,38 @@ filter: brightness(0.85); /* delikatnie przygasza */
 .report-link:hover {
   opacity: 0.8;
 }
+
+.modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+
+  display: none;
+
+  justify-content: center;
+  align-items: center;
+
+  background: rgba(0,0,0,0.5);
+
+  z-index: 5000;
+}
+
+.modal.active {
+  display: flex;
+}
+
+.modal-content {
+  background: #9d1629;
+  color: #f6f2ed;
+
+  padding: 40px;
+  border-radius: 25px;
+
+  width: 500px;
+
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
