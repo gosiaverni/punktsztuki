@@ -1487,3 +1487,16 @@ filter: brightness(0.85); /* delikatnie przygasza */
 .modal-content {
   position: relative;
 }
+
+.review-rating {
+  display: flex;
+  gap: 4px;
+  margin-bottom: 8px;
+}
+
+.review-star {
+  width: 18px;
+  height: 18px;
+
+  object-fit: contain;
+}

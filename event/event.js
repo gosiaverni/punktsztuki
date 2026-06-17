@@ -590,21 +590,27 @@ async function renderReviews() {
 
   reviews.forEach(review => {
 
-    container.innerHTML += `
+    const starsHtml = Array(review.rating)
+  .fill(
+    `<img src="/assets/star.png" class="review-star">`
+  )
+  .join("");
 
-      <div class="review-item">
+container.innerHTML += `
 
-        <div class="review-rating">
-          ⭐ ${review.rating}/5
-        </div>
+  <div class="review-item">
 
-        <div class="review-text">
-          ${review.text || ""}
-        </div>
+    <div class="review-rating">
+      ${starsHtml}
+    </div>
 
-      </div>
+    <div class="review-text">
+      ${review.text || ""}
+    </div>
 
-    `;
+  </div>
+
+`;
 
   });
 
