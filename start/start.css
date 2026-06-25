@@ -1501,14 +1501,16 @@ filter: brightness(0.85); /* delikatnie przygasza */
   object-fit: contain;
 }
 
-.checkbox-row {
+.copyright-row {
     display: flex;
-    align-items: center;
+    justify-content: center;
     width: 100%;
-    gap: 12px;
 }
 
-.checkbox-row span {
-    flex: 1;
-    text-align: center;
+.checkbox-row {
+    width: 100%;
+    max-width: 700px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
 }
