@@ -111,6 +111,36 @@ document.addEventListener("DOMContentLoaded", async () => {
   // 🔐 AUTH
   await checkAuth();
 
+  const imageInput = document.getElementById("images");
+const fileLabel = document.getElementById("file-label");
+
+imageInput?.addEventListener("change", () => {
+
+  if (!imageInput.files.length) {
+    fileLabel.textContent = "wybierz zdjęcia";
+    return;
+  }
+
+  const first = imageInput.files[0];
+  const preview = URL.createObjectURL(first);
+
+  fileLabel.innerHTML = `
+    <div class="file-preview">
+      <img src="${preview}" class="file-thumb">
+
+      <span class="file-name">
+        ${first.name}
+      </span>
+
+      ${
+        imageInput.files.length > 1
+          ? `<span class="file-count">+${imageInput.files.length - 1}</span>`
+          : ""
+      }
+    </div>
+  `;
+});
+
   // 🚀 SUBMIT
   form.addEventListener("submit", async (e) => {
     e.preventDefault();
