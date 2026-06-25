@@ -1514,3 +1514,8 @@ filter: brightness(0.85); /* delikatnie przygasza */
     align-items: center;
     gap: 12px;
 }
+
+.checkbox-row span {
+    flex: 1;
+    text-align: center;
+}
