@@ -125,6 +125,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       const institution = document.getElementById("institution")?.value.trim();
       const link = document.getElementById("event-link")?.value.trim();
       const imageInput = document.getElementById("images");
+      const copyrightConfirmed = document.getElementById("copyright-confirm").checked;
 
       if (!title || !location || !startDate) {
         alert("Uzupełnij wymagane pola.");
@@ -173,7 +174,8 @@ if (imageInput?.files?.length > 0) {
 
   amenities: amenities.length ? amenities : [],
 
-  user_id: user?.id
+  user_id: user?.id,
+  copyright_confirmed: copyrightConfirmed
 }]);
       if (error) {
         console.error(error);
