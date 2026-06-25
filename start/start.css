@@ -1500,3 +1500,15 @@ filter: brightness(0.85); /* delikatnie przygasza */
 
   object-fit: contain;
 }
+
+.checkbox-row {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    gap: 12px;
+}
+
+.checkbox-row span {
+    flex: 1;
+    text-align: center;
+}
