@@ -1500,21 +1500,3 @@ filter: brightness(0.85); /* delikatnie przygasza */
 
   object-fit: contain;
 }
-
-.checkbox-row {
-    display: flex;
-    align-items: flex-start;
-    gap: 10px;
-
-    width: 100%;
-    margin-top: 10px;
-    padding: 0;
-
-    cursor: pointer;
-    box-sizing: border-box;
-}
-
-.checkbox-row input[type="checkbox"] {
-    margin: 3px 0 0 0;
-    flex-shrink: 0;
-}
