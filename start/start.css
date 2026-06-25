@@ -1511,11 +1511,16 @@ filter: brightness(0.85); /* delikatnie przygasza */
     width: 100%;
     max-width: 700px;
     display: flex;
-    align-items: center;
+    align-items: flex-start;
     gap: 12px;
 }
 
 .checkbox-row span {
     flex: 1;
     text-align: center;
+}
+
+.checkbox-row input[type="checkbox"] {
+    margin-top: 3px;
+    flex-shrink: 0;
 }
