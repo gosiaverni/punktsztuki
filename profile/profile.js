@@ -174,6 +174,7 @@ async function loadCreatedEvents() {
     .from("events")
     .select("*")
     .eq("user_id", user.id)
+    .gte("end_date", new Date().toISOString().split("T")[0])
     .order("end_date", { ascending: true });
 
   if (error) {
@@ -210,8 +211,11 @@ async function loadSavedEvents() {
     return;
   }
 
-  const events = data.map(item => item.events);
+const today = new Date().toISOString().split("T")[0];
 
+const events = data
+  .map(item => item.events)
+  .filter(event => event && event.end_date >= today);
   renderSavedEvents(events);
 }
 
