@@ -11,7 +11,24 @@ L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
   attribution: '&copy; OpenStreetMap & CartoDB'
 }).addTo(map);
 
+const params = new URLSearchParams(window.location.search);
+const address = params.get("address");
 
+if (address) {
+  fetch(`${window.GEOCODE_URL}?q=${encodeURIComponent(address)}`)
+    .then(res => res.json())
+    .then(data => {
+      if (!Array.isArray(data) || !data.length) return;
+
+      const place = data[0];
+
+      map.setView(
+        [Number(place.lat), Number(place.lon)],
+        16
+      );
+    })
+    .catch(console.error);
+}
 
 function hideLoader() {
   if (!loader) return;
