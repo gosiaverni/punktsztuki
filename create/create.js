@@ -137,8 +137,21 @@ imageInput?.addEventListener("change", () => {
           ? `<span class="file-count">+${imageInput.files.length - 1}</span>`
           : ""
       }
+
+      <button type="button" class="remove-file">&times;</button>
     </div>
   `;
+
+  document.querySelector(".remove-file").addEventListener("click", (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+
+    // czyści input
+    imageInput.value = "";
+
+    // przywraca początkowy wygląd
+    fileLabel.textContent = "wybierz zdjęcia";
+  });
 });
 
   // 🚀 SUBMIT
