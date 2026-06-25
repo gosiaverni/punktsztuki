@@ -8,6 +8,7 @@ const init = async () => {
 
   setupUI();
   loadProfile();
+  loadCreatedEvents();
   loadSavedEvents(); // 🔥 TU
 };
 
@@ -157,6 +158,33 @@ async function saveProfile(name, handle, image = null) {
 
 }
 
+async function loadCreatedEvents() {
+
+  const container = document.getElementById("created-events");
+  if (!container) return;
+
+  container.innerHTML = "Ładowanie...";
+
+  const { data: userData } = await supabaseClient.auth.getUser();
+  const user = userData.user;
+
+  if (!user) return;
+
+  const { data: events, error } = await supabaseClient
+    .from("events")
+    .select("*")
+    .eq("user_id", user.id)
+    .order("end_date", { ascending: true });
+
+  if (error) {
+    console.error(error);
+    container.innerHTML = "<p>Błąd ładowania</p>";
+    return;
+  }
+
+  renderCreatedEvents(events);
+}
+
 async function loadSavedEvents() {
   const container = document.getElementById("saved-events");
   if (!container) return;
@@ -187,6 +215,53 @@ async function loadSavedEvents() {
   renderSavedEvents(events);
 }
 
+function renderCreatedEvents(events) {
+
+  const container = document.getElementById("created-events");
+  container.innerHTML = "";
+
+  if (!events || events.length === 0) {
+    container.innerHTML = "<p>Nie utworzono jeszcze żadnych wydarzeń</p>";
+    return;
+  }
+
+  events.forEach(event => {
+
+    const card = document.createElement("div");
+    card.classList.add("event-card");
+
+    const formatDate = (d) => {
+      if (!d) return "";
+      const [y, m, day] = d.split("-");
+      return `${day}.${m}.${y}`;
+    };
+
+    card.innerHTML = `
+      <div class="event-card-text">
+        <h3>${event.title}</h3>
+        <p>${event.institution || ""}</p>
+
+        <div class="event-card-date">
+          do ${formatDate(event.end_date)}
+        </div>
+      </div>
+
+      ${
+        event.images?.length
+          ? `<img src="${event.images[0]}">`
+          : ""
+      }
+    `;
+
+    card.onclick = () => {
+      window.location.href = `/event?id=${event.id}`;
+    };
+
+    container.appendChild(card);
+
+  });
+
+}
 function renderSavedEvents(events) {
   const container = document.getElementById("saved-events");
   container.innerHTML = "";
