@@ -1576,3 +1576,10 @@ filter: brightness(0.85); /* delikatnie przygasza */
 .remove-file:hover {
     transform: scale(1.15);
 }
+
+.saved-section {
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+    margin-bottom: 60px;
+}
